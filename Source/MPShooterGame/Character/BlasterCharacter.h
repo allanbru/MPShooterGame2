@@ -29,6 +29,10 @@ protected:
 	void LookUp(float Value);
 
 	void EquipButtonPresssed();
+	void CrouchButtonPressed();
+	void CrouchButtonReleased();
+	void AimButtonPressed();
+	void AimButtonReleased();
 
 private:
 
@@ -57,5 +61,6 @@ public:
 	
 	void SetOverlappingWeapon(AWeapon* Weapon);
 	bool IsWeaponEquipped();
+	bool IsAiming();
 
 };
