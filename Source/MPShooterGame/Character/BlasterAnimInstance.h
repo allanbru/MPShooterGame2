@@ -42,4 +42,14 @@ private:
 	UPROPERTY(BlueprintReadOnly, Category = Character, meta = (AllowPrivateAccess = "true"))
 	bool bAiming{ false };
 
+	UPROPERTY(BlueprintReadOnly, Category = Character, meta = (AllowPrivateAccess = "true"))
+	float YawOffset{ 0 };
+
+	UPROPERTY(BlueprintReadOnly, Category = Character, meta = (AllowPrivateAccess = "true"))
+	float Lean{ 0 };
+
+	FRotator CharacterRotation{ 0,0,0 };
+	FRotator CharacterRotationLastFrame{ 0,0,0 };
+	FRotator DeltaRotation{ 0,0,0 };
+
 };
