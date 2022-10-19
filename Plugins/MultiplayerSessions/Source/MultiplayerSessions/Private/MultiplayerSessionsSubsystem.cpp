@@ -145,7 +145,15 @@ void UMultiplayerSessionsSubsystem::OnFindSessionsComplete(bool bWasSuccessful)
 		MultiplayerOnFindSessionsComplete.Broadcast(TArray<FOnlineSessionSearchResult>(), false);
 		return;
 	}
-
+	for (auto Result : LastSessionSearch->SearchResults) {
+		FString Id = Result.GetSessionIdStr();
+		FString User = Result.Session.OwningUserName;
+		if (GEngine) {
+			GEngine->AddOnScreenDebugMessage(
+				-1, 15.f, FColor::Red, FString::Printf(TEXT("Id: %s, User: %s"), *Id, *User)
+			);
+		}
+	}
 	MultiplayerOnFindSessionsComplete.Broadcast(LastSessionSearch->SearchResults, bWasSuccessful);
 }
 
@@ -154,6 +162,43 @@ void UMultiplayerSessionsSubsystem::OnJoinSessionComplete(FName SessionName, EOn
 	if (SessionInterface)
 	{
 		SessionInterface->ClearOnJoinSessionCompleteDelegate_Handle(JoinSessionCompleteDelegateHandle);
+	}
+
+	if (Result == EOnJoinSessionCompleteResult::Success) {
+		if (GEngine) {
+			GEngine->AddOnScreenDebugMessage(
+				-1, 15.f, FColor::Green, FString::Printf(TEXT("Successfuly joined session"))
+			);
+		}
+	}
+	else {
+		switch (Result) {
+		case EOnJoinSessionCompleteResult::AlreadyInSession:
+			GEngine->AddOnScreenDebugMessage(
+				-1, 15.f, FColor::Red, FString::Printf(TEXT("AlreadyInSession"))
+			);
+			break;
+		case EOnJoinSessionCompleteResult::CouldNotRetrieveAddress:
+			GEngine->AddOnScreenDebugMessage(
+				-1, 15.f, FColor::Red, FString::Printf(TEXT("CouldNotRetrieveAddress"))
+			);
+			break;
+		case EOnJoinSessionCompleteResult::SessionDoesNotExist:
+			GEngine->AddOnScreenDebugMessage(
+				-1, 15.f, FColor::Red, FString::Printf(TEXT("SessionDoesNotExist"))
+			);
+			break;
+		case EOnJoinSessionCompleteResult::SessionIsFull:
+			GEngine->AddOnScreenDebugMessage(
+				-1, 15.f, FColor::Red, FString::Printf(TEXT("SessionIsFull"))
+			);
+			break;
+		case EOnJoinSessionCompleteResult::UnknownError:
+			GEngine->AddOnScreenDebugMessage(
+				-1, 15.f, FColor::Red, FString::Printf(TEXT("UnknownError"))
+			);
+			break;
+		}
 	}
 
 	MultiplayerOnJoinSessionComplete.Broadcast(Result);

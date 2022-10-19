@@ -4,11 +4,17 @@
 
 #include "CoreMinimal.h"
 #include "Animation/AnimInstance.h"
+#include "MPShooterGame/BlasterTypes/TurningInPlace.h"
+
 #include "BlasterAnimInstance.generated.h"
+
 
 /**
  * 
  */
+
+class AWeapon;
+
 UCLASS()
 class MPSHOOTERGAME_API UBlasterAnimInstance : public UAnimInstance
 {
@@ -36,6 +42,8 @@ private:
 	UPROPERTY(BlueprintReadOnly, Category = Character, meta = (AllowPrivateAccess = "true"))
 	bool bWeaponEquipped{ false };
 
+	AWeapon* EquippedWeapon{ nullptr };
+
 	UPROPERTY(BlueprintReadOnly, Category = Character, meta = (AllowPrivateAccess = "true"))
 	bool bIsCrouched{ false };
 
@@ -48,8 +56,20 @@ private:
 	UPROPERTY(BlueprintReadOnly, Category = Character, meta = (AllowPrivateAccess = "true"))
 	float Lean{ 0 };
 
+	UPROPERTY(BlueprintReadOnly, Category = Character, meta = (AllowPrivateAccess = "true"))
+	float AO_Yaw{ 0 };
+
+	UPROPERTY(BlueprintReadOnly, Category = Character, meta = (AllowPrivateAccess = "true"))
+	float AO_Pitch{ 0 };
+
 	FRotator CharacterRotation{ 0,0,0 };
 	FRotator CharacterRotationLastFrame{ 0,0,0 };
 	FRotator DeltaRotation{ 0,0,0 };
+
+	UPROPERTY(BlueprintReadOnly, Category = Character, meta = (AllowPrivateAccess = "true"))
+	FTransform LeftHandTransform { FTransform::Identity };
+
+	UPROPERTY(BlueprintReadOnly, Category = Character, meta = (AllowPrivateAccess = "true"))
+	ETurningInPlace TurningInPlace{ETurningInPlace::ETIP_NotTurning};
 
 };

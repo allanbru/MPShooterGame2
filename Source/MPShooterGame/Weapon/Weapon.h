@@ -24,6 +24,7 @@ public:
 	AWeapon();
 	virtual void Tick(float DeltaTime) override;
 	void ShowPickupWidget(bool bShowWidget);
+	virtual void Fire(const FVector& HitTarget);
 
 protected:
 
@@ -53,8 +54,15 @@ private:
 
 	UPROPERTY(VisibleAnywhere, Category = "WeaponProperties")
 	class UWidgetComponent* PickupWidget{ nullptr };
+
+	UPROPERTY(EditAnywhere, Category = "WeaponProperties")
+	class UAnimationAsset* FireAnimation;
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<class ACasing>CasingClass{ nullptr };
 	
 public:
 	void SetWeaponState(EWeaponState State);
-	FORCEINLINE USphereComponent* GetAreaSphere() { return AreaSphere; }
+	FORCEINLINE USphereComponent* GetAreaSphere() { return AreaSphere; };
+	FORCEINLINE USkeletalMeshComponent* GetWeaponMesh() const { return WeaponMesh; };
 };

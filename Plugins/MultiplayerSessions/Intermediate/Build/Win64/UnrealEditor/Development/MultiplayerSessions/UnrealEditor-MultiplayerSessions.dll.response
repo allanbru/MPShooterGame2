@@ -35,6 +35,7 @@
 /FUNCTIONPADMIN
 "F:\Unreal\MPShooterGame\Intermediate\Build\Win64\MPShooterGameEditor\Development\Engine\SharedPCH.Engine.ShadowErrors.h.obj"
 "F:\Unreal\MPShooterGame\Plugins\MultiplayerSessions\Intermediate\Build\Win64\UnrealEditor\Development\MultiplayerSessions\Module.MultiplayerSessions.cpp.obj"
+"F:\Unreal\MPShooterGame\Plugins\MultiplayerSessions\Intermediate\Build\Win64\UnrealEditor\Development\MultiplayerSessions\MultiplayerSessionsSubsystem.cpp.obj"
 "F:\Unreal\MPShooterGame\Plugins\MultiplayerSessions\Intermediate\Build\Win64\UnrealEditor\Development\MultiplayerSessions\Module.MultiplayerSessions.gen.cpp.obj"
 "F:\Unreal\MPShooterGame\Plugins\MultiplayerSessions\Intermediate\Build\Win64\UnrealEditor\Development\MultiplayerSessions\Default.rc2.res"
 "..\Intermediate\Build\Win64\UnrealEditor\Development\CoreUObject\UnrealEditor-CoreUObject.lib"
