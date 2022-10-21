@@ -128,6 +128,13 @@ private:
 
 	bool bElimmed{ false };
 
+	FTimerHandle ElimTimer;
+
+	UPROPERTY(EditDefaultsOnly)
+	float ElimDelay{ 3.f };
+
+	void ElimTimerFinished();
+
 public:	
 	
 	void SetOverlappingWeapon(AWeapon* Weapon);
