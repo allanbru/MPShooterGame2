@@ -163,7 +163,8 @@
             "f:\\program files\\epic games\\ue_5.0\\engine\\plugins\\online\\onlinesubsystem\\source\\public\\onlinesubsystem.h",
             "f:\\program files\\epic games\\ue_5.0\\engine\\plugins\\online\\onlinesubsystem\\source\\public\\onlinesubsystemmodule.h",
             "f:\\unreal\\mpshootergame\\plugins\\multiplayersessions\\source\\multiplayersessions\\private\\multiplayersessions.cpp",
-            "f:\\unreal\\mpshootergame\\plugins\\multiplayersessions\\source\\multiplayersessions\\public\\multiplayersessions.h"
+            "f:\\unreal\\mpshootergame\\plugins\\multiplayersessions\\source\\multiplayersessions\\public\\multiplayersessions.h",
+            "f:\\unreal\\mpshootergame\\plugins\\multiplayersessions\\source\\multiplayersessions\\private\\multiplayersessionssubsystem.cpp"
         ],
         "ImportedModules": [],
         "ImportedHeaderUnits": []

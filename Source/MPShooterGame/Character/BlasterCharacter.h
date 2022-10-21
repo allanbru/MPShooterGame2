@@ -5,12 +5,13 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "MPShooterGame/BlasterTypes/TurningInPlace.h"
+#include "MPShooterGame/Interfaces/InteractWithCrosshairsInterface.h"
 
 #include "BlasterCharacter.generated.h"
 
 
 UCLASS()
-class MPSHOOTERGAME_API ABlasterCharacter : public ACharacter
+class MPSHOOTERGAME_API ABlasterCharacter : public ACharacter, public IInteractWithCrosshairsInterface
 {
 	GENERATED_BODY()
 
@@ -22,6 +23,12 @@ public:
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	virtual void PostInitializeComponents() override;
 	void PlayFireMontage(bool bAiming);
+	void PlayElimMontage();
+	virtual void OnRep_ReplicatedMovement() override;
+
+	void Elim(); //Server Only
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastElim();
 
 protected:
 	
@@ -37,10 +44,18 @@ protected:
 	void CrouchButtonReleased();
 	void AimButtonPressed();
 	void AimButtonReleased();
-	void FireButtonPressed();
-	void FireButtonReleased();
 
 	void AimOffset(float DeltaTime);
+	void CalculateAO_Pitch();
+	void SimProxiesTurn();
+	void FireButtonPressed();
+	void FireButtonReleased();
+	void PlayHitReactMontage();
+
+	UFUNCTION()
+	void ReceiveDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, class AController* InstigatorController, AActor* DamageCauser);
+
+	void UpdateHUDHealth();
 
 private:
 
@@ -77,6 +92,42 @@ private:
 	UPROPERTY(EditAnywhere, Category = Combat)
 	class UAnimMontage* FireWeaponMontage{ nullptr };
 
+	UPROPERTY(EditAnywhere, Category = Combat)
+	UAnimMontage* HitReactMontage{ nullptr };
+
+	UPROPERTY(EditAnywhere, Category = Combat)
+	UAnimMontage* ElimMontage { nullptr };
+
+	void HideCameraIfCharacterClose();
+
+	UPROPERTY(EditAnywhere)
+	float CameraThreshold = 200.f;
+
+	bool bRotateRootBone{ false };
+	float TurnThreshold{ 5.f };
+	FRotator ProxyRotationLastFrame{0,0,0};
+	FRotator ProxyRotation{ 0,0,0 };
+	float ProxyYaw{ 0.f };
+	float TimeSinceLastMovementReplication{ 0.f };
+	float CalculateSpeed();
+
+	/**
+	* PlayerHealth
+	*/
+
+	UPROPERTY(EditAnywhere, Category = "Player Stats")
+	float MaxHealth{ 100.f };
+
+	UPROPERTY(ReplicatedUsing=OnRep_Health, VisibleAnywhere, Category="Player Stats")
+	float Health{ 100.f };
+
+	UFUNCTION()
+	void OnRep_Health();
+
+	class ABlasterPlayerController* BlasterPlayerController{ nullptr };
+
+	bool bElimmed{ false };
+
 public:	
 	
 	void SetOverlappingWeapon(AWeapon* Weapon);
@@ -86,5 +137,9 @@ public:
 	FORCEINLINE float GetAO_Pitch() { return AO_Pitch; };
 	AWeapon* GetEquippedWeapon();
 	FORCEINLINE ETurningInPlace GetTurningInPlace() { return TurningInPlace; }
+	FVector GetHitTarget() const;
+	FORCEINLINE UCameraComponent* GetFollowCamera() const { return FollowCamera; }
+	FORCEINLINE bool ShouldRotateRootBone() const { return bRotateRootBone; }
+	FORCEINLINE bool IsElimmed() const { return bElimmed; };
 
 };
