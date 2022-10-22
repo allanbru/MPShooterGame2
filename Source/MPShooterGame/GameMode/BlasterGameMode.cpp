@@ -6,11 +6,25 @@
 #include "Kismet/GameplayStatics.h"
 #include "MPShooterGame/Character/BlasterCharacter.h"
 #include "MPShooterGame/PlayerController/BlasterPlayerController.h"
+#include "MPShooterGame/PlayerState/BlasterPlayerState.h"
 
 void ABlasterGameMode::PlayerEliminated(ABlasterCharacter* ElimmedCharacter, ABlasterPlayerController* VictimController, ABlasterPlayerController* AttackerController)
 {
-	if (!ElimmedCharacter) return;
-	ElimmedCharacter->Elim();
+	ABlasterPlayerState* AttackerPlayerState = AttackerController ? Cast<ABlasterPlayerState>(AttackerController->PlayerState) : nullptr;
+	ABlasterPlayerState* VictimPlayerState = AttackerController ? Cast<ABlasterPlayerState>(VictimController->PlayerState) : nullptr;
+
+	if (AttackerPlayerState && AttackerPlayerState != VictimPlayerState) 
+	{
+		AttackerPlayerState->AddToScore(1.f);
+	}
+	if (VictimPlayerState)
+	{
+		VictimPlayerState->AddToDefeats(1);
+	}
+	if (ElimmedCharacter)
+	{
+		ElimmedCharacter->Elim();
+	}
 }
 
 void ABlasterGameMode::RequestRespawn(ACharacter* ElimmedCharacter, AController* ElimmedController)

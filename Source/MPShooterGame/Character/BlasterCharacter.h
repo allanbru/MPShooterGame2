@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Components/TimelineComponent.h"
 #include "GameFramework/Character.h"
 #include "MPShooterGame/BlasterTypes/TurningInPlace.h"
 #include "MPShooterGame/Interfaces/InteractWithCrosshairsInterface.h"
@@ -30,6 +31,11 @@ public:
 	UFUNCTION(NetMulticast, Reliable)
 	void MulticastElim();
 
+	virtual void Destroyed() override;
+
+	UPROPERTY()
+	class ABlasterPlayerState* BlasterPlayerState{ nullptr };
+
 protected:
 	
 	virtual void BeginPlay() override;
@@ -54,8 +60,10 @@ protected:
 
 	UFUNCTION()
 	void ReceiveDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, class AController* InstigatorController, AActor* DamageCauser);
-
 	void UpdateHUDHealth();
+
+	//Poll for any relevant class and initialize our HUD
+	void PollInit();
 
 private:
 
@@ -75,7 +83,7 @@ private:
 	void OnRep_OverlappingWeapon(AWeapon* LastWeapon);
 
 	UPROPERTY(VisibleAnywhere)
-	class UCombatComponent* Combat;
+	class UCombatComponent* Combat{ nullptr };
 
 	UFUNCTION(Server, Reliable)
 	void ServerEquipButtonPressed();
@@ -135,18 +143,56 @@ private:
 
 	void ElimTimerFinished();
 
+	/**
+	* Dissolve Effect
+	*/
+
+	UPROPERTY(VisibleAnywhere)
+	UTimelineComponent* DissolveTimeline{ nullptr };
+	FOnTimelineFloat DissolveTrack;
+
+	UPROPERTY(EditAnywhere)
+	UCurveFloat* DissolveCurve{ nullptr };
+
+	UFUNCTION()
+	void UpdateDissolveMaterial(float DissolveValue);
+	void StartDissolve();
+	
+	//Dyn Inst changed at runtime
+	UPROPERTY(VisibleAnywhere, Category = Elim)
+	UMaterialInstanceDynamic* DynamicDissolveMaterialInstance{ nullptr };
+
+	//Mat Inst set on BP, used w/ the DynMatInst
+	UPROPERTY(EditAnywhere, Category = Elim)
+	UMaterialInstance* DissolveMaterialInstance{ nullptr };
+
+	/**
+	* Elim bot effects
+	*/
+
+	UPROPERTY(EditAnywhere)
+	UParticleSystem* ElimBotEffect{ nullptr };
+
+	UPROPERTY(VisibleAnywhere)
+	UParticleSystemComponent* ElimBotComponent{ nullptr };
+
+	UPROPERTY(EditAnywhere)
+	class USoundCue* ElimBotSound{ nullptr };
+
 public:	
 	
 	void SetOverlappingWeapon(AWeapon* Weapon);
 	bool IsWeaponEquipped();
 	bool IsAiming();
-	FORCEINLINE float GetAO_Yaw() { return AO_Yaw; };
-	FORCEINLINE float GetAO_Pitch() { return AO_Pitch; };
+	FORCEINLINE float GetAO_Yaw() { return AO_Yaw; }
+	FORCEINLINE float GetAO_Pitch() { return AO_Pitch; }
 	AWeapon* GetEquippedWeapon();
 	FORCEINLINE ETurningInPlace GetTurningInPlace() { return TurningInPlace; }
 	FVector GetHitTarget() const;
 	FORCEINLINE UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 	FORCEINLINE bool ShouldRotateRootBone() const { return bRotateRootBone; }
-	FORCEINLINE bool IsElimmed() const { return bElimmed; };
+	FORCEINLINE bool IsElimmed() const { return bElimmed; }
+	FORCEINLINE float GetHealth() const { return Health; }
+	FORCEINLINE float GetMaxHealth() const { return MaxHealth; }
 
 };
