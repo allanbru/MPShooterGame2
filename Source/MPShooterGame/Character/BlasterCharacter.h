@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Components/TimelineComponent.h"
 #include "GameFramework/Character.h"
+#include "MPShooterGame/BlasterTypes/CombatState.h"
 #include "MPShooterGame/BlasterTypes/TurningInPlace.h"
 #include "MPShooterGame/Interfaces/InteractWithCrosshairsInterface.h"
 
@@ -24,6 +25,7 @@ public:
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	virtual void PostInitializeComponents() override;
 	void PlayFireMontage(bool bAiming);
+	void PlayReloadMontage();
 	void PlayElimMontage();
 	virtual void OnRep_ReplicatedMovement() override;
 
@@ -35,6 +37,9 @@ public:
 
 	UPROPERTY()
 	class ABlasterPlayerState* BlasterPlayerState{ nullptr };
+
+	UFUNCTION(BlueprintCallable)
+	void EquipStartingWeapon();
 
 protected:
 	
@@ -48,6 +53,7 @@ protected:
 	void EquipButtonPresssed();
 	void CrouchButtonPressed();
 	void CrouchButtonReleased();
+	void ReloadButtonPressed();
 	void AimButtonPressed();
 	void AimButtonReleased();
 
@@ -82,7 +88,7 @@ private:
 	UFUNCTION()
 	void OnRep_OverlappingWeapon(AWeapon* LastWeapon);
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	class UCombatComponent* Combat{ nullptr };
 
 	UFUNCTION(Server, Reliable)
@@ -97,8 +103,15 @@ private:
 	ETurningInPlace TurningInPlace;
 	void TurnInPlace(float DeltaTime);
 
+	/*
+	* Animation Montages
+	*/
+
 	UPROPERTY(EditAnywhere, Category = Combat)
 	class UAnimMontage* FireWeaponMontage{ nullptr };
+
+	UPROPERTY(EditAnywhere, Category = Combat)
+	class UAnimMontage* ReloadMontage{ nullptr };
 
 	UPROPERTY(EditAnywhere, Category = Combat)
 	UAnimMontage* HitReactMontage{ nullptr };
@@ -179,6 +192,12 @@ private:
 	UPROPERTY(EditAnywhere)
 	class USoundCue* ElimBotSound{ nullptr };
 
+	/**
+	* Starting Weapon
+	*/
+	UPROPERTY(EditAnywhere, Category=Combat)
+	TSubclassOf<AWeapon>StartingWeaponClass{ nullptr };
+
 public:	
 	
 	void SetOverlappingWeapon(AWeapon* Weapon);
@@ -194,5 +213,6 @@ public:
 	FORCEINLINE bool IsElimmed() const { return bElimmed; }
 	FORCEINLINE float GetHealth() const { return Health; }
 	FORCEINLINE float GetMaxHealth() const { return MaxHealth; }
+	ECombatState GetCombatState() const;
 
 };

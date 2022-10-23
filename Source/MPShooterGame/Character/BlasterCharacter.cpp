@@ -16,6 +16,7 @@
 #include "MPShooterGame/PlayerController/BlasterPlayerController.h"
 #include "MPShooterGame/PlayerState/BlasterPlayerState.h"
 #include "MPShooterGame/Weapon/Weapon.h"
+#include "MPShooterGame/Weapon/WeaponTypes.h"
 #include "Net/UnrealNetwork.h"
 #include "Particles/ParticleSystemComponent.h"
 #include "Sound/SoundCue.h"
@@ -66,7 +67,9 @@ void ABlasterCharacter::BeginPlay()
 	if (HasAuthority())
 	{
 		OnTakeAnyDamage.AddDynamic(this, &ABlasterCharacter::ReceiveDamage);
+		EquipStartingWeapon();
 	}
+
 }
 
 void ABlasterCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -97,7 +100,6 @@ void ABlasterCharacter::Tick(float DeltaTime)
 	HideCameraIfCharacterClose();
 
 	PollInit();
-
 }
 
 void ABlasterCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -112,6 +114,7 @@ void ABlasterCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 	PlayerInputComponent->BindAction(TEXT("Aim"), EInputEvent::IE_Released, this, &ABlasterCharacter::AimButtonReleased);
 	PlayerInputComponent->BindAction(TEXT("Fire"), EInputEvent::IE_Pressed, this, &ABlasterCharacter::FireButtonPressed);
 	PlayerInputComponent->BindAction(TEXT("Fire"), EInputEvent::IE_Released, this, &ABlasterCharacter::FireButtonReleased);
+	PlayerInputComponent->BindAction(TEXT("Reload"), EInputEvent::IE_Pressed, this, &ABlasterCharacter::ReloadButtonPressed);
 
 	PlayerInputComponent->BindAxis(TEXT("MoveForward"), this, &ABlasterCharacter::MoveForward);
 	PlayerInputComponent->BindAxis(TEXT("MoveRight"), this, &ABlasterCharacter::MoveRight);
@@ -167,6 +170,12 @@ void ABlasterCharacter::Destroyed()
 
 void ABlasterCharacter::MulticastElim_Implementation()
 {
+
+	if (BlasterPlayerController)
+	{
+		BlasterPlayerController->SetHUDWeaponAmmo(0);
+	}
+
 	bElimmed = true;
 	PlayElimMontage();
 
@@ -308,6 +317,21 @@ void ABlasterCharacter::StartDissolve()
 	}
 }
 
+void ABlasterCharacter::EquipStartingWeapon()
+{
+	if (!StartingWeaponClass) return;
+	UWorld* World = GetWorld();
+	if (World)
+	{
+		if (Combat && Combat->EquippedWeapon == nullptr)
+		{
+			AWeapon* NewWeapon = World->SpawnActor<AWeapon>(StartingWeaponClass, GetActorLocation(), GetActorRotation());
+			Combat->EquipWeapon(NewWeapon);
+			return;
+		}
+	}
+}
+
 void ABlasterCharacter::SetOverlappingWeapon(AWeapon* Weapon)
 {
 	if (OverlappingWeapon) {
@@ -360,9 +384,18 @@ void ABlasterCharacter::CrouchButtonReleased()
 	UnCrouch();
 }
 
+void ABlasterCharacter::ReloadButtonPressed()
+{
+	if (Combat)
+	{
+		Combat->Reload();
+	}
+}
+
 void ABlasterCharacter::AimButtonPressed()
 {
-	if (Combat) {
+	if (Combat) 
+	{
 		Combat->SetAiming(true);
 	}
 }
@@ -496,6 +529,7 @@ FVector ABlasterCharacter::GetHitTarget() const
 	return Combat->HitTarget;
 }
 
+
 void ABlasterCharacter::PlayFireMontage(bool bAiming)
 {
 	if (Combat == nullptr || Combat->EquippedWeapon == nullptr) return;
@@ -506,6 +540,30 @@ void ABlasterCharacter::PlayFireMontage(bool bAiming)
 		FName SectionName = (bAiming) ? FName("RifleAim") : FName("RifleHip");
 		AnimInstance->Montage_JumpToSection(SectionName);
 	}
+}
+
+void ABlasterCharacter::PlayReloadMontage()
+{
+	if (Combat == nullptr || Combat->EquippedWeapon == nullptr) return;
+
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	if (AnimInstance && ReloadMontage) {
+		AnimInstance->Montage_Play(ReloadMontage);
+		FName SectionName;
+		switch (Combat->EquippedWeapon->GetWeaponType()) 
+		{
+			case EWeaponType::EWT_AssaultRifle:
+				SectionName = FName("Rifle");
+				break;
+		}
+		AnimInstance->Montage_JumpToSection(SectionName);
+	}
+}
+
+ECombatState ABlasterCharacter::GetCombatState() const
+{
+	if (Combat == nullptr) return ECombatState::ECS_MAX;
+	return Combat->CombatState;
 }
 
 void ABlasterCharacter::PlayElimMontage()

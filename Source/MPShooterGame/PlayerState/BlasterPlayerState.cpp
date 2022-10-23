@@ -15,14 +15,14 @@ void ABlasterPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& 
 
 void ABlasterPlayerState::AddToScore(float ScoreAmount)
 {
-	SetScore(Score + ScoreAmount);
+	SetScore(GetScore() + ScoreAmount);
 	Character = (Character == nullptr) ? Cast<ABlasterCharacter>(GetPawn()) : Character;
 	if (!Character) return;
 
 	Controller = (Controller == nullptr) ? Cast<ABlasterPlayerController>(Character->Controller) : Controller;
 	if (!Controller) return;
 
-	Controller->SetHUDScore(Score);
+	Controller->SetHUDScore(GetScore());
 }
 
 void ABlasterPlayerState::OnRep_Score()

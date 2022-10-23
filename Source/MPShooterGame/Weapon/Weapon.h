@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "WeaponTypes.h"
+
 #include "Weapon.generated.h"
 
 UENUM(BlueprintType)
@@ -66,11 +68,19 @@ public:
 	UPROPERTY(EditAnywhere, Category = Combat)
 	bool bAutomatic{ true };
 
+	/**
+	* Ammo
+	*/
+
+	void SetHUDAmmo();
+
 protected:
 
 	virtual void BeginPlay() override;
 
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
+	virtual void OnRep_Owner() override;
 
 	UFUNCTION()
 	virtual void OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
@@ -100,11 +110,31 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<class ACasing>CasingClass{ nullptr };
+
+	UPROPERTY(ReplicatedUsing = OnRep_Ammo, EditAnywhere)
+	int32 Ammo{ 30 };
 	
+	UPROPERTY(EditAnywhere)
+	int32 MagCapacity { 30 };
+
+	UFUNCTION()
+	void OnRep_Ammo();
+
+	//Reduce ammo and check owner (to update HUD)
+	void SpendRound();
+
+	class ABlasterCharacter* BlasterOwnerCharacter{ nullptr };
+	class ABlasterPlayerController* BlasterOwnerController{ nullptr };
+
+	UPROPERTY(EditAnywhere)
+	EWeaponType WeaponType;
+
 public:
 	void SetWeaponState(EWeaponState State);
 	FORCEINLINE USphereComponent* GetAreaSphere() { return AreaSphere; };
 	FORCEINLINE USkeletalMeshComponent* GetWeaponMesh() const { return WeaponMesh; };
 	FORCEINLINE float GetZoomedFOV() const { return ZoomedFOV; }
 	FORCEINLINE float GetZoomInterpSpeed() const { return ZoomInterpSpeed; }
+	bool IsEmpty();
+	FORCEINLINE EWeaponType GetWeaponType() const { return WeaponType; }
 };
