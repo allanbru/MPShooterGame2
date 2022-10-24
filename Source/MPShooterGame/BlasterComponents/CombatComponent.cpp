@@ -103,6 +103,9 @@ void UCombatComponent::FireTimerFinished()
 	if (bFireButtonPressed && EquippedWeapon->bAutomatic) {
 		Fire();
 	}
+	if (EquippedWeapon->IsEmpty()) {
+		Reload();
+	}
 }
 
 bool UCombatComponent::CanFire()
@@ -179,6 +182,10 @@ void UCombatComponent::EquipWeapon(AWeapon* WeaponToEquip)
 
 	if (EquippedWeapon->EquipSound) {
 		UGameplayStatics::PlaySoundAtLocation(this, EquippedWeapon->EquipSound, Character->GetActorLocation());
+	}
+
+	if (EquippedWeapon->IsEmpty()) {
+		Reload();
 	}
 
 	Character->GetCharacterMovement()->bOrientRotationToMovement = false;

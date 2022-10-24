@@ -67,6 +67,8 @@ void ABlasterCharacter::BeginPlay()
 	if (HasAuthority())
 	{
 		OnTakeAnyDamage.AddDynamic(this, &ABlasterCharacter::ReceiveDamage);
+		SetCanBeDamaged(false);
+		GetWorldTimerManager().SetTimer(InvulnerabilityTimer, this, &ABlasterCharacter::SetVulnerable, InvulnerabilityTime);
 	}
 
 }
@@ -145,6 +147,11 @@ void ABlasterCharacter::PollInit()
 			BlasterPlayerState->AddToDefeats(0);
 		}
 	}
+}
+
+void ABlasterCharacter::SetVulnerable()
+{
+	SetCanBeDamaged(true);
 }
 
 void ABlasterCharacter::OnRep_ReplicatedMovement()

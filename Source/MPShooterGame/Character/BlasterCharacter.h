@@ -199,6 +199,12 @@ private:
 	UPROPERTY(EditAnywhere, Category=Combat)
 	TSubclassOf<AWeapon>StartingWeaponClass{ nullptr };
 
+	UPROPERTY(EditAnywhere, Category = Combat)
+	float InvulnerabilityTime{ 3.f };
+
+	void SetVulnerable();
+	FTimerHandle InvulnerabilityTimer;
+
 public:	
 	
 	void SetOverlappingWeapon(AWeapon* Weapon);
