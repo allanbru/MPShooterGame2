@@ -67,7 +67,6 @@ void ABlasterCharacter::BeginPlay()
 	if (HasAuthority())
 	{
 		OnTakeAnyDamage.AddDynamic(this, &ABlasterCharacter::ReceiveDamage);
-		EquipStartingWeapon();
 	}
 
 }
@@ -129,6 +128,12 @@ void ABlasterCharacter::PostInitializeComponents()
 	if (Combat) {
 		Combat->Character = this;
 	}
+}
+
+void ABlasterCharacter::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+	EquipStartingWeapon();
 }
 
 void ABlasterCharacter::PollInit()

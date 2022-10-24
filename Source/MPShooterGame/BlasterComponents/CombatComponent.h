@@ -31,8 +31,6 @@ public:
 	void Reload();
 	UFUNCTION(BlueprintCallable)
 	void FinishReloading();
-	
-	bool bInitializedCarriedAmmo{ false };
 
 protected:
 
@@ -62,6 +60,10 @@ protected:
 
 	UFUNCTION(Server, Reliable)
 	void ServerReload();
+
+	int32 AmountToReload();
+
+	void UpdateAmmoValues();
 
 	void HandleReload();
 
@@ -129,7 +131,7 @@ private:
 
 	//CarriedAmmo for the currently EquippedWeapon type
 	UPROPERTY(ReplicatedUsing = OnRep_CarriedAmmo)
-	int32 CarriedAmmo{ 1 };
+	int32 CarriedAmmo{ 0 };
 
 	UFUNCTION()
 	void OnRep_CarriedAmmo();

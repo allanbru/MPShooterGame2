@@ -11,6 +11,7 @@
 #include "MPShooterGame/PlayerController/BlasterPlayerController.h"
 #include "MPShooterGame/Weapon/Weapon.h"
 #include "Net/UnrealNetwork.h"
+#include "Sound/SoundCue.h"
 #include "TimerManager.h"
 
 #include "DrawDebugHelpers.h"
@@ -108,6 +109,7 @@ bool UCombatComponent::CanFire()
 {
 	if (EquippedWeapon == nullptr) return false;
 	if (EquippedWeapon->IsEmpty() || !bCanFire) return false;
+	if (CombatState != ECombatState::ECS_Unoccupied) return false;
 	return true;
 }
 
@@ -130,7 +132,7 @@ void UCombatComponent::ServerFire_Implementation(const FVector_NetQuantize& Trac
 void UCombatComponent::MulticastFire_Implementation(const FVector_NetQuantize& TraceHitTarget)
 {
 	if (EquippedWeapon == nullptr) return;
-	if (Character) {
+	if (Character && CombatState == ECombatState::ECS_Unoccupied) {
 		Character->PlayFireMontage(bAiming);
 		EquippedWeapon->Fire(TraceHitTarget);
 	}
@@ -158,13 +160,25 @@ void UCombatComponent::EquipWeapon(AWeapon* WeaponToEquip)
 	if (CarriedAmmoMap.Contains(EquippedWeapon->GetWeaponType()))
 	{
 		CarriedAmmo = CarriedAmmoMap[EquippedWeapon->GetWeaponType()];
+		UE_LOG(LogTemp, Warning, TEXT("Carried Ammo: %d"), CarriedAmmo);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Weapon Type not found..."));
 	}
 
 	Controller = (Controller == nullptr) ? Cast<ABlasterPlayerController>(Character->Controller) : Controller;
 	if (Controller)
 	{
-		
 		Controller->SetHUDCarriedAmmo(CarriedAmmo);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Controller not found..."));
+	}
+
+	if (EquippedWeapon->EquipSound) {
+		UGameplayStatics::PlaySoundAtLocation(this, EquippedWeapon->EquipSound, Character->GetActorLocation());
 	}
 
 	Character->GetCharacterMovement()->bOrientRotationToMovement = false;
@@ -181,7 +195,8 @@ void UCombatComponent::Reload()
 
 void UCombatComponent::ServerReload_Implementation()
 {
-	if (Character == nullptr) return;
+	if (Character == nullptr || EquippedWeapon == nullptr || AmountToReload() == 0) return;
+
 	CombatState = ECombatState::ECS_Reloading;
 	HandleReload();
 }
@@ -189,24 +204,65 @@ void UCombatComponent::ServerReload_Implementation()
 void UCombatComponent::FinishReloading()
 {
 	if (Character == nullptr) return;
-	if (Character->HasAuthority()) {
+	if (Character->HasAuthority()) 
+	{
+		UpdateAmmoValues();
 		CombatState = ECombatState::ECS_Unoccupied;
+	}
+	if (bFireButtonPressed)
+	{
+		Fire();
 	}
 }
 
 void UCombatComponent::OnRep_CombatState()
 {
-	switch (CombatState) {
-	case ECombatState::ECS_Reloading:
-		HandleReload();
-		break;
+	switch (CombatState) 
+	{
+		case ECombatState::ECS_Reloading:
+			HandleReload();
+			break;
+		case ECombatState::ECS_Unoccupied:
+			if (bFireButtonPressed) Fire();
+			break;
 	}
 }
-
 
 void UCombatComponent::HandleReload()
 {
 	Character->PlayReloadMontage();
+}
+
+int32 UCombatComponent::AmountToReload()
+{
+	if (EquippedWeapon == nullptr) return 0;
+	int32 RoomInMag = EquippedWeapon->GetMagCapacity() - EquippedWeapon->GetAmmo();
+	if (CarriedAmmoMap.Contains(EquippedWeapon->GetWeaponType()))
+	{
+		int32 AmountCarried = CarriedAmmoMap[EquippedWeapon->GetWeaponType()];
+		int32 Least = FMath::Min(RoomInMag, AmountCarried);
+		return FMath::Clamp(RoomInMag, 0, Least);
+	}
+	return 0;
+
+	
+}
+
+void UCombatComponent::UpdateAmmoValues()
+{
+	if (Character == nullptr || EquippedWeapon == nullptr) return;
+	int32 ReloadAmount = AmountToReload();
+	if (CarriedAmmoMap.Contains(EquippedWeapon->GetWeaponType()))
+	{
+		CarriedAmmoMap[EquippedWeapon->GetWeaponType()] -= ReloadAmount;
+		CarriedAmmo = CarriedAmmoMap[EquippedWeapon->GetWeaponType()];
+	}
+	Controller = (Controller == nullptr) ? Cast<ABlasterPlayerController>(Character->Controller) : Controller;
+	if (Controller)
+	{
+		Controller->SetHUDCarriedAmmo(CarriedAmmo);
+	}
+	EquippedWeapon->AddAmmo(ReloadAmount);
 }
 
 void UCombatComponent::OnRep_EquippedWeapon()
@@ -221,6 +277,10 @@ void UCombatComponent::OnRep_EquippedWeapon()
 		}
 		Character->GetCharacterMovement()->bOrientRotationToMovement = false;
 		Character->bUseControllerRotationYaw = true;
+
+		if (EquippedWeapon->EquipSound) {
+			UGameplayStatics::PlaySoundAtLocation(this, EquippedWeapon->EquipSound, Character->GetActorLocation());
+		}
 	}
 }
 
@@ -236,7 +296,6 @@ void UCombatComponent::OnRep_CarriedAmmo()
 void UCombatComponent::InitializeCarriedAmmo()
 {
 	CarriedAmmoMap.Emplace(EWeaponType::EWT_AssaultRifle, StartingARAmmo);
-	bInitializedCarriedAmmo = true;
 }
 
 void UCombatComponent::TraceUnderCrosshairs(FHitResult& TraceHitResult)
