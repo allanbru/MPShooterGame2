@@ -31,6 +31,8 @@ public:
 	
 	void OnMatchStateSet(FName State);
 
+	void HandleMatchHasStarted();
+
 protected:
 	
 	virtual void BeginPlay() override;

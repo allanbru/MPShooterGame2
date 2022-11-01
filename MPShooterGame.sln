@@ -29,10 +29,6 @@ Global
 		Shipping|HoloLens = Shipping|HoloLens
 		Shipping|Win64 = Shipping|Win64
 	EndGlobalSection
-	# UnrealVS Section
-	GlobalSection(ddbf523f-7eb6-4887-bd51-85a714ff87eb) = preSolution
-		AvailablePlatforms=Win64;HoloLens
-	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{205534A6-3047-30BE-A5C8-B471B14FDF6E}.DebugGame Editor|HoloLens.ActiveCfg = Invalid|x64
 		{205534A6-3047-30BE-A5C8-B471B14FDF6E}.DebugGame Editor|Win64.ActiveCfg = DebugGame_Editor|x64
@@ -43,8 +39,8 @@ Global
 		{205534A6-3047-30BE-A5C8-B471B14FDF6E}.DebugGame|Win64.ActiveCfg = DebugGame|x64
 		{205534A6-3047-30BE-A5C8-B471B14FDF6E}.DebugGame|Win64.Build.0 = DebugGame|x64
 		{205534A6-3047-30BE-A5C8-B471B14FDF6E}.Development Editor|HoloLens.ActiveCfg = Invalid|x64
-		{205534A6-3047-30BE-A5C8-B471B14FDF6E}.Development Editor|Win64.ActiveCfg = Development_Editor|x64
-		{205534A6-3047-30BE-A5C8-B471B14FDF6E}.Development Editor|Win64.Build.0 = Development_Editor|x64
+		{205534A6-3047-30BE-A5C8-B471B14FDF6E}.Development Editor|Win64.ActiveCfg = DebugGame_Editor|x64
+		{205534A6-3047-30BE-A5C8-B471B14FDF6E}.Development Editor|Win64.Build.0 = DebugGame_Editor|x64
 		{205534A6-3047-30BE-A5C8-B471B14FDF6E}.Development|HoloLens.ActiveCfg = Development|arm64
 		{205534A6-3047-30BE-A5C8-B471B14FDF6E}.Development|HoloLens.Build.0 = Development|arm64
 		{205534A6-3047-30BE-A5C8-B471B14FDF6E}.Development|HoloLens.Deploy.0 = Development|arm64
@@ -70,7 +66,13 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{B447F9DE-4ACC-3996-B374-ED500219FE26} = {233774A8-CC9D-3FA9-86D1-90573E92B704}
 		{205534A6-3047-30BE-A5C8-B471B14FDF6E} = {DE1F8B53-6C02-3C13-9101-A7C8D96F3FF6}
+		{B447F9DE-4ACC-3996-B374-ED500219FE26} = {233774A8-CC9D-3FA9-86D1-90573E92B704}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {71ED088B-A699-4E05-BDB6-AF05231A4F2A}
+	EndGlobalSection
+	GlobalSection(ddbf523f-7eb6-4887-bd51-85a714ff87eb) = preSolution
+		AvailablePlatforms = Win64;HoloLens
 	EndGlobalSection
 EndGlobal
