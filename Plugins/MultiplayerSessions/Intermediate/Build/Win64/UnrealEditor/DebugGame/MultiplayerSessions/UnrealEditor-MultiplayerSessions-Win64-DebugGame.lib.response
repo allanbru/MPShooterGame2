@@ -1,0 +1,13 @@
+/NOLOGO
+/errorReport:prompt
+/MACHINE:x64
+/SUBSYSTEM:WINDOWS
+/DEF
+/NAME:"UnrealEditor-MultiplayerSessions-Win64-DebugGame.dll"
+/IGNORE:4221
+/NODEFAULTLIB
+"E:\Unreal\MPShooterGame\Intermediate\Build\Win64\MPShooterGameEditor\DebugGame\Engine\SharedPCH.Engine.NonOptimized.ShadowErrors.h.obj"
+"E:\Unreal\MPShooterGame\Plugins\MultiplayerSessions\Intermediate\Build\Win64\UnrealEditor\DebugGame\MultiplayerSessions\Module.MultiplayerSessions.cpp.obj"
+"E:\Unreal\MPShooterGame\Plugins\MultiplayerSessions\Intermediate\Build\Win64\UnrealEditor\DebugGame\MultiplayerSessions\Module.MultiplayerSessions.gen.cpp.obj"
+"E:\Unreal\MPShooterGame\Plugins\MultiplayerSessions\Intermediate\Build\Win64\UnrealEditor\DebugGame\MultiplayerSessions\Default.rc2.res"
+/OUT:"E:\Unreal\MPShooterGame\Plugins\MultiplayerSessions\Intermediate\Build\Win64\UnrealEditor\DebugGame\MultiplayerSessions\UnrealEditor-MultiplayerSessions-Win64-DebugGame.lib"

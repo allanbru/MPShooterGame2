@@ -135,7 +135,7 @@ void ABlasterCharacter::PostInitializeComponents()
 void ABlasterCharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
-	EquipStartingWeapon();
+	//EquipStartingWeapon();
 }
 
 void ABlasterCharacter::PollInit()
@@ -342,6 +342,11 @@ void ABlasterCharacter::EquipStartingWeapon()
 			return;
 		}
 	}
+}
+
+void ABlasterCharacter::ServerEquipStartingWeapon_Implementation()
+{
+	EquipStartingWeapon();
 }
 
 void ABlasterCharacter::SetOverlappingWeapon(AWeapon* Weapon)

@@ -163,21 +163,12 @@ void UCombatComponent::EquipWeapon(AWeapon* WeaponToEquip)
 	if (CarriedAmmoMap.Contains(EquippedWeapon->GetWeaponType()))
 	{
 		CarriedAmmo = CarriedAmmoMap[EquippedWeapon->GetWeaponType()];
-		UE_LOG(LogTemp, Warning, TEXT("Carried Ammo: %d"), CarriedAmmo);
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Weapon Type not found..."));
 	}
 
 	Controller = (Controller == nullptr) ? Cast<ABlasterPlayerController>(Character->Controller) : Controller;
 	if (Controller)
 	{
 		Controller->SetHUDCarriedAmmo(CarriedAmmo);
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Controller not found..."));
 	}
 
 	if (EquippedWeapon->EquipSound) {

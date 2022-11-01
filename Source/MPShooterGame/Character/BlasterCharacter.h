@@ -42,6 +42,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void EquipStartingWeapon();
 
+	UFUNCTION(Server, Reliable)
+	void ServerEquipStartingWeapon();
+
 protected:
 	
 	virtual void BeginPlay() override;
