@@ -48,6 +48,10 @@ void ABlasterPlayerController::OnPossess(APawn* InPawn)
 	if (BlasterCharacter)
 	{
 		SetHUDHealth(BlasterCharacter->GetHealth(), BlasterCharacter->GetMaxHealth());
+		if (CharacterOverlay && !BlasterCharacter->IsWeaponEquipped())
+		{
+			BlasterCharacter->ServerEquipStartingWeapon();
+		}
 	}
 }
 
