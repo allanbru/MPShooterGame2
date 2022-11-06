@@ -16,6 +16,10 @@ class MPSHOOTERGAME_API ABlasterPlayerController : public APlayerController
 
 public:
 
+	virtual void OnPossess(APawn* InPawn) override;
+	virtual void Tick(float DeltaTime) override;
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
 	void SetHUDHealth(float Health, float MaxHealth);
 	void SetHUDScore(float Score);
 	void SetHUDDefeats(int32 Defeats);
@@ -23,9 +27,9 @@ public:
 	void SetHUDCarriedAmmo(int32 Ammo);
 	void SetHUDMatchCountdown(float CountdownTime);
 	void SetHUDAnnouncementCountdown(float CountdownTime);
-	virtual void OnPossess(APawn* InPawn) override;
-	virtual void Tick(float DeltaTime) override;
-	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
+	UFUNCTION(BlueprintCallable)
+	void SetHUDClassChange();
 
 	virtual float GetServerTime(); //Synced with server world clock
 	virtual void ReceivedPlayer() override; //Sync clocks ASAP
@@ -35,9 +39,14 @@ public:
 	void HandleMatchHasStarted();
 	void HandleCooldown();
 
+	UFUNCTION(BlueprintCallable)
+	void SetStartingWeaponClass(TSubclassOf<AWeapon> WeaponClass);
+
 protected:
 	
 	virtual void BeginPlay() override;
+	virtual void SetupInputComponent() override;
+	
 	void SetHUDTime();
 	void PollInit();
 
@@ -63,15 +72,19 @@ protected:
 	void ServerCheckMatchState();
 
 	UFUNCTION(Client, Reliable)
-	void ClientJoinMidgame(FName StateOfMatch, float Warmup, float Match, float StartingTime);
+	void ClientJoinMidgame(FName StateOfMatch, float Warmup, float Match, float Cooldown, float StartingTime);
 private:
 
 	UPROPERTY()
 	class ABlasterHUD* BlasterHUD{ nullptr };
+
+	UPROPERTY()
+	class ABlasterGameMode* BlasterGameMode{ nullptr };
 	
 	float LevelStartingTime{ 0.f };
 	float MatchTime{ 0.f };
 	float WarmupTime{ 0.f };
+	float CooldownTime{ 0.f };
 	uint32 CountdownInt{ 0 };
 
 	UPROPERTY(ReplicatedUsing = OnRep_MatchState)
@@ -88,5 +101,12 @@ private:
 	float HUDMaxHealth{ 0 };
 	float HUDScore{ 0 };
 	int32 HUDDefeats{ 0 };
+	int32 HUDWeaponAmmo{ 0 };
+	int32 HUDCarriedAmmo{ 0 };
 
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<AWeapon> StartingWeaponClass;
+
+	UFUNCTION(Server, Reliable)
+	void ServerSetStartingWeaponClass(TSubclassOf<AWeapon> WeaponClass);
 };

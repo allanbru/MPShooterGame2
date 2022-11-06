@@ -69,6 +69,9 @@ public:
 	UPROPERTY(EditAnywhere, Category = Combat)
 	bool bAutomatic{ true };
 
+	UPROPERTY(EditAnywhere, Category = Combat)
+	float TraceLength{ 80000.f };
+
 	UPROPERTY(EditAnywhere)
 	class USoundCue* EquipSound{ nullptr };
 

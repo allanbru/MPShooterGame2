@@ -9,6 +9,7 @@
 void ABlasterHUD::BeginPlay()
 {
 	Super::BeginPlay();
+
 }
 
 void ABlasterHUD::AddCharacterOverlay()
@@ -25,6 +26,25 @@ void ABlasterHUD::AddAnnouncement()
 	if (!PlayerController || !AnnouncementClass) return;
 	Announcement = CreateWidget<UAnnouncement>(PlayerController, AnnouncementClass);
 	Announcement->AddToViewport();
+}
+
+void ABlasterHUD::ToggleClassSelectorWidget()
+{
+	APlayerController* PlayerController = GetOwningPlayerController();
+	if (!PlayerController || !ClassSelectorWidgetClass) return;
+	
+	if (ClassSelectorWidget && bClassSelectorOnScreen)
+	{
+		ClassSelectorWidget->RemoveFromParent();
+		bClassSelectorOnScreen = false;
+	}
+	else
+	{
+		ClassSelectorWidget = CreateWidget<UUserWidget>(PlayerController, ClassSelectorWidgetClass);
+		ClassSelectorWidget->AddToViewport();
+		bClassSelectorOnScreen = true;
+	}
+	
 }
 
 void ABlasterHUD::DrawHUD()

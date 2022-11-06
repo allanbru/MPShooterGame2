@@ -9,8 +9,6 @@
 #include "MPShooterGame/Weapon/WeaponTypes.h"
 #include "CombatComponent.generated.h"
 
-#define TRACE_LENGTH 80000.f
-
 class ABlasterHUD;
 class ABlasterPlayerController;
 class AWeapon;
@@ -21,6 +19,7 @@ class MPSHOOTERGAME_API UCombatComponent : public UActorComponent
 	GENERATED_BODY()
 
 public:	
+
 	UCombatComponent();
 	friend class ABlasterCharacter;	
 	
@@ -31,6 +30,10 @@ public:
 	void Reload();
 	UFUNCTION(BlueprintCallable)
 	void FinishReloading();
+
+	void FireButtonPressed(bool bPressed);
+
+	float TraceLength{ 80000.f };
 
 protected:
 
@@ -46,15 +49,13 @@ protected:
 
 	void Fire();
 
-	void FireButtonPressed(bool bPressed);
-
 	UFUNCTION(Server, Reliable)
 	void ServerFire(const FVector_NetQuantize& TraceHitTarget);
 
 	UFUNCTION(NetMulticast, Reliable)
 	void MulticastFire(const FVector_NetQuantize& TraceHitTarget);
 
-	void TraceUnderCrosshairs(FHitResult& HitResult);
+	void TraceUnderCrosshairs(FHitResult& HitResult, FVector& End);
 
 	void SetHUDCrosshairs(float DeltaTime);
 
@@ -141,6 +142,15 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	int32 StartingARAmmo{ 30 };
+
+	UPROPERTY(EditAnywhere)
+	int32 StartingRocketAmmo{ 4 };
+
+	UPROPERTY(EditAnywhere)
+	int32 StartingPistolAmmo{ 30 };
+
+	UPROPERTY(EditAnywhere)
+	int32 StartingSMGAmmo { 120 };
 
 	void InitializeCarriedAmmo();
 

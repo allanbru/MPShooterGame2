@@ -60,8 +60,10 @@ void UCombatComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 	if (Character && Character->IsLocallyControlled())
 	{
 		FHitResult HitResult;
-		TraceUnderCrosshairs(HitResult);
+		FVector End;
+		TraceUnderCrosshairs(HitResult, End);
 		HitTarget = HitResult.ImpactPoint;
+		if (HitTarget.IsNearlyZero()) HitTarget = End;
 
 		SetHUDCrosshairs(DeltaTime);
 		InterpFOV(DeltaTime);
@@ -152,6 +154,8 @@ void UCombatComponent::EquipWeapon(AWeapon* WeaponToEquip)
 
 	EquippedWeapon = WeaponToEquip;
 	EquippedWeapon->SetWeaponState(EWeaponState::EWS_Equipped);
+
+	TraceLength = EquippedWeapon->TraceLength;
 
 	const USkeletalMeshSocket* HandSocket = Character->GetMesh()->GetSocketByName(FName("RightHandSocket"));
 	if (HandSocket) {
@@ -279,6 +283,8 @@ void UCombatComponent::OnRep_EquippedWeapon()
 		if (EquippedWeapon->EquipSound) {
 			UGameplayStatics::PlaySoundAtLocation(this, EquippedWeapon->EquipSound, Character->GetActorLocation());
 		}
+
+		TraceLength = EquippedWeapon->TraceLength;
 	}
 }
 
@@ -294,9 +300,12 @@ void UCombatComponent::OnRep_CarriedAmmo()
 void UCombatComponent::InitializeCarriedAmmo()
 {
 	CarriedAmmoMap.Emplace(EWeaponType::EWT_AssaultRifle, StartingARAmmo);
+	CarriedAmmoMap.Emplace(EWeaponType::EWT_RocketLauncher, StartingRocketAmmo);
+	CarriedAmmoMap.Emplace(EWeaponType::EWT_Pistol, StartingPistolAmmo);
+	CarriedAmmoMap.Emplace(EWeaponType::EWT_SubmachineGun, StartingSMGAmmo);
 }
 
-void UCombatComponent::TraceUnderCrosshairs(FHitResult& TraceHitResult)
+void UCombatComponent::TraceUnderCrosshairs(FHitResult& TraceHitResult, FVector& End)
 {
 	FVector2D ViewportSize;
 	if (GEngine && GEngine->GameViewport) {
@@ -320,7 +329,7 @@ void UCombatComponent::TraceUnderCrosshairs(FHitResult& TraceHitResult)
 			float DistanceToCharacter = (Character->GetActorLocation() - Start).Size();
 			Start += CrosshairWorldDirection * (DistanceToCharacter + 100.f);
 		}
-		FVector End = Start + CrosshairWorldDirection * TRACE_LENGTH;
+		End = Start + CrosshairWorldDirection * TraceLength;
 
 		GetWorld()->LineTraceSingleByChannel(TraceHitResult, Start, End, ECollisionChannel::ECC_Visibility);
 		if (TraceHitResult.GetActor() && TraceHitResult.GetActor()->Implements<UInteractWithCrosshairsInterface>())

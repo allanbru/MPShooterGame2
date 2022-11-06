@@ -39,11 +39,16 @@ public:
 	UPROPERTY()
 	class ABlasterPlayerState* BlasterPlayerState{ nullptr };
 
+	void SetStartingWeaponClass(TSubclassOf<AWeapon> WeaponClass);
+
 	UFUNCTION(BlueprintCallable)
 	void EquipStartingWeapon();
 
 	UFUNCTION(Server, Reliable)
 	void ServerEquipStartingWeapon();
+
+	UPROPERTY(Replicated)
+	bool bDisableGameplay{ false };
 
 protected:
 	
@@ -55,6 +60,8 @@ protected:
 	void LookUp(float Value);
 
 	void EquipButtonPresssed();
+
+	virtual void Jump() override;
 	void CrouchButtonPressed();
 	void CrouchButtonReleased();
 	void ReloadButtonPressed();
@@ -74,6 +81,7 @@ protected:
 
 	//Poll for any relevant class and initialize our HUD
 	void PollInit();
+	void RotateInPlace(float DeltaTime);
 
 private:
 
@@ -104,7 +112,7 @@ private:
 	float AO_Pitch{ 0 };
 	FRotator StartingAimRotation{ 0,0,0 };
 
-	ETurningInPlace TurningInPlace;
+	ETurningInPlace TurningInPlace{ETurningInPlace::ETIP_NotTurning};
 	void TurnInPlace(float DeltaTime);
 
 	/*
@@ -224,5 +232,7 @@ public:
 	FORCEINLINE float GetHealth() const { return Health; }
 	FORCEINLINE float GetMaxHealth() const { return MaxHealth; }
 	ECombatState GetCombatState() const;
+	FORCEINLINE UCombatComponent* GetCombat() const { return Combat; }
+	FORCEINLINE bool GetDisableGameplay() const { return bDisableGameplay; }
 
 };

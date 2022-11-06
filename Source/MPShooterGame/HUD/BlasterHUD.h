@@ -41,6 +41,12 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Announcements")
 	TSubclassOf<UUserWidget> AnnouncementClass;
 
+	UPROPERTY(EditAnywhere, Category = "Class Selection")
+	TSubclassOf<UUserWidget> ClassSelectorWidgetClass;
+	UUserWidget* ClassSelectorWidget{ nullptr };
+	bool bClassSelectorOnScreen{ false };
+	void ToggleClassSelectorWidget();
+
 	UPROPERTY()
 	class UAnnouncement* Announcement{ nullptr };
 	void AddAnnouncement();
