@@ -12,7 +12,7 @@ void ALobbyGameMode::PostLogin(APlayerController* NewPlayer)
 	if (NumberOfPlayers == 2) {
 		UWorld* World = GetWorld();
 		if (World) {
-			bUseSeamlessTravel = false;
+			bUseSeamlessTravel = true;
 			World->ServerTravel(FString("/Game/Maps/BlasterMap?listen"));
 		}
 	}

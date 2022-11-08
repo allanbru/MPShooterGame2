@@ -137,7 +137,6 @@ private:
 	UFUNCTION()
 	void OnRep_CarriedAmmo();
 
-	UPROPERTY(EditAnywhere)
 	TMap<EWeaponType, int32> CarriedAmmoMap;
 
 	UPROPERTY(EditAnywhere)
@@ -151,6 +150,12 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	int32 StartingSMGAmmo { 120 };
+
+	UPROPERTY(EditAnywhere)
+	int32 StartingShotgunAmmo { 15 };
+
+	UPROPERTY(EditAnywhere)
+	int32 StartingSniperAmmo{ 15 };
 
 	void InitializeCarriedAmmo();
 
