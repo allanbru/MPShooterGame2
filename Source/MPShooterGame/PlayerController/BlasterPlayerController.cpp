@@ -80,6 +80,10 @@ void ABlasterPlayerController::PollInit()
 				if (BlasterCharacter && !BlasterCharacter->IsWeaponEquipped()) {
 					BlasterCharacter->SetStartingWeaponClass(StartingWeaponClass);
 					BlasterCharacter->ServerEquipStartingWeapon();
+					if (BlasterCharacter->GetCombat())
+					{
+						SetHUDGrenades(BlasterCharacter->GetCombat()->GetGrenades());
+					}
 				}
 			}
 		}
@@ -206,6 +210,20 @@ void ABlasterPlayerController::SetHUDCarriedAmmo(int32 Ammo)
 	BlasterHUD->CharacterOverlay->CarriedAmmoAmount->SetText(FText::FromString(AmmoText));
 }
 
+void ABlasterPlayerController::SetHUDGrenades(int32 Grenades)
+{
+	BlasterHUD = (BlasterHUD == nullptr) ? Cast<ABlasterHUD>(GetHUD()) : BlasterHUD;
+	bool bHUDValid = BlasterHUD &&
+		BlasterHUD->CharacterOverlay &&
+		BlasterHUD->CharacterOverlay->GrenadesAmount;
+	if (!bHUDValid) {
+		bInitializeCharacterOverlay = true;
+		return;
+	}
+	FString	GrenadesText = FString::Printf(TEXT("%d"), Grenades);
+	BlasterHUD->CharacterOverlay->GrenadesAmount->SetText(FText::FromString(GrenadesText));
+}
+
 void ABlasterPlayerController::SetHUDMatchCountdown(float CountdownTime)
 {
 	BlasterHUD = (BlasterHUD == nullptr) ? Cast<ABlasterHUD>(GetHUD()) : BlasterHUD;
@@ -274,26 +292,29 @@ void ABlasterPlayerController::SetHUDTime()
 {
 	float TimeLeft = 0.f;
 	
-	if (!HasAuthority() || !BlasterGameMode)
+	if (MatchState == MatchState::WaitingToStart)
 	{
-		if (MatchState == MatchState::WaitingToStart)
+		TimeLeft = WarmupTime - GetServerTime() + LevelStartingTime;
+	}
+	else if (MatchState == MatchState::InProgress)
+	{
+		TimeLeft = WarmupTime + MatchTime - GetServerTime() + LevelStartingTime;
+	}
+	else if (MatchState == MatchState::Cooldown)
+	{
+		TimeLeft = WarmupTime + MatchTime + CooldownTime - GetServerTime() + LevelStartingTime;
+	}
+	
+	if (HasAuthority())
+	{
+		BlasterGameMode = BlasterGameMode == nullptr ? Cast<ABlasterGameMode>(UGameplayStatics::GetGameMode(this)) : BlasterGameMode;
+		if (BlasterGameMode)
 		{
-			TimeLeft = WarmupTime - GetServerTime() + LevelStartingTime;
-		}
-		else if (MatchState == MatchState::InProgress)
-		{
-			TimeLeft = WarmupTime + MatchTime - GetServerTime() + LevelStartingTime;
-		}
-		else if (MatchState == MatchState::Cooldown)
-		{
-			TimeLeft = WarmupTime + MatchTime + CooldownTime - GetServerTime() + LevelStartingTime;
+			TimeLeft = BlasterGameMode->GetCountdownTime() + LevelStartingTime;
 		}
 	}
-	else
-	{
-		TimeLeft = BlasterGameMode->GetCountdownTime();
-	}
-	uint32 SecondsLeft = FMath::CeilToInt(TimeLeft);
+	
+	uint32 SecondsLeft = FMath::CeilToInt(TimeLeft);	
 	
 	if (CountdownInt != SecondsLeft) {
 		if (MatchState == MatchState::WaitingToStart || MatchState == MatchState::Cooldown)

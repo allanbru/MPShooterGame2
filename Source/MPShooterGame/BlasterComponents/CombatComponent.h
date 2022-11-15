@@ -33,7 +33,20 @@ public:
 
 	void FireButtonPressed(bool bPressed);
 
-	float TraceLength{ 80000.f };
+	UFUNCTION(BlueprintCallable)
+	void ShotgunShellReload();
+	void JumpToShotgunEnd();
+
+	UFUNCTION(BlueprintCallable)
+	void ThrowGrenadeFinished();
+
+	UFUNCTION(BlueprintCallable)
+	void LaunchGrenade();
+
+	UFUNCTION(Server, Reliable)
+	void ServerLaunchGrenade(const FVector_NetQuantize& Target);
+
+	void PickupAmmo(EWeaponType WeaponType, int32 AmmoAmount);
 
 protected:
 
@@ -62,11 +75,29 @@ protected:
 	UFUNCTION(Server, Reliable)
 	void ServerReload();
 
+	void HandleReload();
 	int32 AmountToReload();
+
+	void ThrowGrenade();
+
+	UFUNCTION(Server, Reliable)
+	void ServerThrowGrenade();
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<class AProjectile> GrenadeClass;
 
 	void UpdateAmmoValues();
 
-	void HandleReload();
+	void UpdateShotgunAmmoValues();
+
+	void DropEquippedWeapon();
+	void AttachActorToRightHand(AActor* ActorToAttach);
+	void AttachActorToLeftHand(AActor* ActorToAttach);
+	void UpdateCarriedAmmo();
+	void PlayEquipWeaponSound();
+	void ReloadEmptyWeapon();
+
+	void ShowAttachedGrenade(bool bShowGrenade);
 
 private:
 
@@ -80,11 +111,14 @@ private:
 	UPROPERTY(Replicated)
 	bool bAiming{ false };
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "Movement")
 	float BaseWalkSpeed{ 600.f };
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "Movement")
 	float AimWalkSpeed{ 450.f };
+
+	UPROPERTY(EditAnywhere, Category = "Movement")
+	float RocketLaunchSpeed{ 1000.f };
 
 	bool bFireButtonPressed{ false };
 
@@ -98,6 +132,9 @@ private:
 	float CrosshairShootingFactor{ 0.f };
 
 	FVector HitTarget{ 0,0,0 };
+	FVector CrosshitStart{ 0,0,0 };
+	FVector CrosshitEnd{ 0,0,0 };
+
 	FHUDPackage HUDPackage;
 
 	/**
@@ -140,6 +177,9 @@ private:
 	TMap<EWeaponType, int32> CarriedAmmoMap;
 
 	UPROPERTY(EditAnywhere)
+	int32 MaxCarriedAmmo{ 500 };
+
+	UPROPERTY(EditAnywhere)
 	int32 StartingARAmmo{ 30 };
 
 	UPROPERTY(EditAnywhere)
@@ -152,10 +192,13 @@ private:
 	int32 StartingSMGAmmo { 120 };
 
 	UPROPERTY(EditAnywhere)
-	int32 StartingShotgunAmmo { 15 };
+	int32 StartingShotgunAmmo { 21 };
 
 	UPROPERTY(EditAnywhere)
 	int32 StartingSniperAmmo{ 15 };
+
+	UPROPERTY(EditAnywhere)
+	int32 StartingGrenadeLauncherAmmo{ 8 };
 
 	void InitializeCarriedAmmo();
 
@@ -165,6 +208,21 @@ private:
 	UFUNCTION()
 	void OnRep_CombatState();
 
+	UPROPERTY(EditAnywhere, ReplicatedUsing = OnRep_Grenades)
+	int32 Grenades{ 3 };
+
+	UFUNCTION()
+	void OnRep_Grenades();
+
+	UPROPERTY(EditAnywhere)
+	int32 MaxGrenades{ 3 };
+
+	void UpdateHUDGrenades();
+
 public:	
+
+	float TraceLength{ 80000.f };
+
+	FORCEINLINE int32 GetGrenades() const { return Grenades; }
 
 };

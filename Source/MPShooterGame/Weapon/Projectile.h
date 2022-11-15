@@ -22,6 +22,10 @@ protected:
 
 	UFUNCTION()
 	virtual void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+	void StartDestroyTimer();
+	void DestroyTimerFinished();
+	void SpawnTrailSystem();
+	void ExplodeDamage();
 
 	UPROPERTY(EditAnywhere)
 	float Damage{ 20.f };
@@ -35,8 +39,29 @@ protected:
 	UPROPERTY(EditAnywhere)
 	class UBoxComponent* CollisionBox;
 
+	UPROPERTY(EditAnywhere)
+	class UNiagaraSystem* TrailSystem{ nullptr };
+
+	UPROPERTY()
+	class UNiagaraComponent* TrailSystemComponent{ nullptr };
+
 	UPROPERTY(VisibleAnywhere)
 	class UProjectileMovementComponent* ProjectileMovementComponent;
+
+	UPROPERTY(VisibleAnywhere)
+	UStaticMeshComponent* ProjectileMesh;
+
+	UPROPERTY(EditAnywhere, Category = Explosion)
+	float MinimumDamage{ 10.f };
+
+	UPROPERTY(EditAnywhere, Category = Explosion)
+	float InnerRadius{ 200.f };
+
+	UPROPERTY(EditAnywhere, Category = Explosion)
+	float OuterRadius{ 500.f };
+
+	UPROPERTY(EditAnywhere, Category = Explosion)
+	float DamageFalloff{ 1.f };
 
 private:
 	
@@ -44,6 +69,11 @@ private:
 	UParticleSystem* Tracer;
 
 	class UParticleSystemComponent* TracerComponent;	
+
+	FTimerHandle DestroyTimer;
+
+	UPROPERTY(EditAnywhere, Category = Explosion)
+	float DestroyTime{ 3.f };
 
 public:	
 	
