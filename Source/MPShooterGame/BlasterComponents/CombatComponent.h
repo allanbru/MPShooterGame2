@@ -132,8 +132,6 @@ private:
 	float CrosshairShootingFactor{ 0.f };
 
 	FVector HitTarget{ 0,0,0 };
-	FVector CrosshitStart{ 0,0,0 };
-	FVector CrosshitEnd{ 0,0,0 };
 
 	FHUDPackage HUDPackage;
 

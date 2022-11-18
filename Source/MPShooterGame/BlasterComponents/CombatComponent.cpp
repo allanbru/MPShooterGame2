@@ -103,7 +103,6 @@ void UCombatComponent::Fire()
 			CrosshairShootingFactor = .75f;
 		}
 		StartFireTimer();
-		ReloadEmptyWeapon();
 	}
 	
 }
@@ -150,6 +149,24 @@ void UCombatComponent::FireButtonPressed(bool bPressed)
 void UCombatComponent::ServerFire_Implementation(const FVector_NetQuantize& TraceHitTarget)
 {
 	MulticastFire(TraceHitTarget);
+	//If RL, launch character
+	if (EquippedWeapon->GetWeaponType() == EWeaponType::EWT_RocketLauncher)
+	{
+		//Allow maximum flying even at low aim angles. At AngleMultiplier=2, 30deg = max jump; Should be set to CSC(clamp angle)
+		float AngleMultiplier = 3.86370331f;
+
+		//Calculate vector from tip of gun to target
+		if (!(EquippedWeapon->GetWeaponMesh() && EquippedWeapon->GetWeaponMesh()->GetSocketByName(FName("MuzzleFlash")))) return;
+		const FVector StartingLocation = EquippedWeapon->GetWeaponMesh()->GetSocketByName(FName("MuzzleFlash"))->GetSocketLocation(EquippedWeapon->GetWeaponMesh());
+		FVector ToTarget = TraceHitTarget - StartingLocation;
+
+		//Calculate the angle importance [-1,0].
+		float AimAngleToGroundModifier = FMath::Clamp(AngleMultiplier * ToTarget.GetSafeNormal().Dot(Character->GetActorUpVector()), -1, 0);
+
+		//We are projecting on the up vector, therefore, we need the minus sign
+		FVector LaunchVelocity = -1 * RocketLaunchSpeed * AimAngleToGroundModifier * Character->GetActorUpVector();
+		if (LaunchVelocity.Size() > 0) Character->LaunchCharacter(LaunchVelocity, false, true);
+	}
 }
 
 void UCombatComponent::MulticastFire_Implementation(const FVector_NetQuantize& TraceHitTarget)
@@ -165,23 +182,8 @@ void UCombatComponent::MulticastFire_Implementation(const FVector_NetQuantize& T
 	if (Character && CombatState == ECombatState::ECS_Unoccupied) {
 		Character->PlayFireMontage(bAiming);
 		EquippedWeapon->Fire(TraceHitTarget);
-
-		//If RL, launch character
-		if (EquippedWeapon->GetWeaponType() == EWeaponType::EWT_RocketLauncher)
-		{
-			//Allow maximum flying even at low aim angles. At AngleMultiplier=2, 30deg = max jump; Should be set to CSC(clamp angle)
-			float AngleMultiplier = 3.86370331f;
-			FVector AimDirection = CrosshitEnd - CrosshitStart;
-
-			//Calculate the angle importance [-1,0].
-			float AimAngleToGroundModifier = FMath::Clamp(AngleMultiplier * AimDirection.GetSafeNormal().Dot(Character->GetActorUpVector()), -1, 0);
-			
-			//We are projecting on the up vector, therefore, we need the minus sign
-			FVector LaunchVelocity = -1 * RocketLaunchSpeed * AimAngleToGroundModifier * Character->GetActorUpVector();
-			if(LaunchVelocity.Size() > 0) Character->LaunchCharacter(LaunchVelocity, false, true);
-		}
-
 	}
+	ReloadEmptyWeapon();
 }
 
 void UCombatComponent::EquipWeapon(AWeapon* WeaponToEquip)
@@ -571,9 +573,6 @@ void UCombatComponent::TraceUnderCrosshairs(FHitResult& TraceHitResult, FVector&
 			QueryParams.AddIgnoredActor(Character);
 		}
 		End = Start + CrosshairWorldDirection * TraceLength;
-
-		CrosshitStart = Start;
-		CrosshitEnd = End;
 
 		GetWorld()->LineTraceSingleByChannel(TraceHitResult, Start, End, ECollisionChannel::ECC_Visibility, QueryParams);
 		if (TraceHitResult.GetActor() && TraceHitResult.GetActor()->Implements<UInteractWithCrosshairsInterface>())

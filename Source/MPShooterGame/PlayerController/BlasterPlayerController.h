@@ -21,6 +21,7 @@ public:
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 	void SetHUDHealth(float Health, float MaxHealth);
+	void SetHUDShield(float Shield, float MaxShield);
 	void SetHUDScore(float Score);
 	void SetHUDDefeats(int32 Defeats);
 	void SetHUDWeaponAmmo(int32 Ammo);
@@ -96,14 +97,23 @@ private:
 
 	class UCharacterOverlay* CharacterOverlay{nullptr};
 
-	bool bInitializeCharacterOverlay{ false };
-
-	float HUDHealth{ 0 };
-	float HUDMaxHealth{ 0 };
-	float HUDScore{ 0 };
+	float HUDHealth{ 0.f };
+	float HUDMaxHealth{ 0.f };
+	float HUDShield{ 0.f };
+	float HUDMaxShield{ 0.f };
+	float HUDScore{ 0.f };
 	int32 HUDDefeats{ 0 };
+	int32 HUDGrenades{ 0 };
 	int32 HUDWeaponAmmo{ 0 };
 	int32 HUDCarriedAmmo{ 0 };
+
+	bool bInitializeHealth{ false };
+	bool bInitializeShield{ false };
+	bool bInitializeScore{ false };
+	bool bInitializeDefeats{ false };
+	bool bInitializeGrenades{ true };
+	bool bInitializeWeaponAmmo{ false };
+	bool bInitializeCarriedAmmo{ false };
 
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<AWeapon> StartingWeaponClass;
