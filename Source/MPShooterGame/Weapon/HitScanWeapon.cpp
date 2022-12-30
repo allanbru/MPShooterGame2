@@ -4,7 +4,6 @@
 #include "HitScanWeapon.h"
 #include "Engine/SkeletalMeshSocket.h"
 #include "Kismet/GameplayStatics.h"
-#include "Kismet/KismetMathLibrary.h"
 #include "MPShooterGame/Character/BlasterCharacter.h"
 #include "Particles/ParticleSystemComponent.h"
 #include "Sound/SoundCue.h"
@@ -19,8 +18,8 @@ void AHitScanWeapon::Fire(const FVector& HitTarget)
 	AController* InstigatorController = Cast<AController>(OwnerPawn->GetController());
 
 	const USkeletalMeshSocket* MuzzleFlashSocket = GetWeaponMesh()->GetSocketByName(FName("MuzzleFlash"));
-	if (MuzzleFlashSocket)
-	{
+	if (MuzzleFlashSocket){
+
 		FTransform SocketTransform = MuzzleFlashSocket->GetSocketTransform(GetWeaponMesh());
 		FVector Start = SocketTransform.GetLocation();
 
@@ -79,7 +78,7 @@ void AHitScanWeapon::WeaponTraceHit(const FVector& TraceStart, const FVector& Hi
 	UWorld* World = GetWorld();
 	if (World)
 	{
-		FVector End = (bUseScatter) ? TraceEndWithScatter(TraceStart, HitTarget)  : TraceStart + (HitTarget - TraceStart) * 1.01f;
+		FVector End = TraceStart + (HitTarget - TraceStart) * 1.01f;
 
 		FCollisionQueryParams QueryParams = FCollisionQueryParams();
 		QueryParams.AddIgnoredActor(OwnerActor);
@@ -105,16 +104,4 @@ void AHitScanWeapon::WeaponTraceHit(const FVector& TraceStart, const FVector& Hi
 		}
 		
 	}
-}
-
-FVector AHitScanWeapon::TraceEndWithScatter(const FVector& TraceStart, const FVector& HitTarget)
-{
-	FVector ToTargetNormalize = (HitTarget - TraceStart).GetSafeNormal();
-	FVector SphereCenter = TraceStart + ToTargetNormalize * DistanceToSphere;
-
-	FVector RandVec = UKismetMathLibrary::RandomUnitVector() * FMath::FRandRange(0.f, SphereRadius);
-	FVector EndLoc = SphereCenter + RandVec;
-
-	FVector ToEndLoc = EndLoc - TraceStart;
-	return FVector(TraceStart + ToEndLoc.GetSafeNormal() * TraceLength);
 }

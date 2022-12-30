@@ -192,16 +192,25 @@ void ABlasterCharacter::OnRep_ReplicatedMovement()
 
 void ABlasterCharacter::Elim()
 {
-	if (Combat && Combat->EquippedWeapon)
+	if (Combat)
 	{
-		if (Combat->EquippedWeapon->bCanBeDropped)
+		if (Combat->EquippedWeapon)
 		{
-			Combat->EquippedWeapon->Dropped();
+			if (Combat->EquippedWeapon->bCanBeDropped)
+			{
+				Combat->EquippedWeapon->Dropped();
+			}
+			else
+			{
+				Combat->EquippedWeapon->Destroy();
+			}
 		}
-		else
+
+		if (Combat->SecondaryWeapon)
 		{
-			Combat->EquippedWeapon->Destroy();
+			Combat->SecondaryWeapon->Destroy();
 		}
+		
 	}
 	MulticastElim();
 	GetWorldTimerManager().SetTimer(ElimTimer, this, &ABlasterCharacter::ElimTimerFinished, ElimDelay);
@@ -298,17 +307,31 @@ void ABlasterCharacter::HideCameraIfCharacterClose()
 	if ((FollowCamera->GetComponentLocation() - GetActorLocation()).Size() < CameraThreshold)
 	{
 		GetMesh()->SetVisibility(false);
-		if (Combat && Combat->EquippedWeapon && Combat->EquippedWeapon->GetWeaponMesh())
+		if (Combat)
 		{
-			Combat->EquippedWeapon->GetWeaponMesh()->bOwnerNoSee = true;
+			if (Combat->EquippedWeapon && Combat->EquippedWeapon->GetWeaponMesh())
+			{
+				Combat->EquippedWeapon->GetWeaponMesh()->bOwnerNoSee = true;
+			}
+			if (Combat->SecondaryWeapon && Combat->SecondaryWeapon->GetWeaponMesh())
+			{
+				Combat->SecondaryWeapon->GetWeaponMesh()->bOwnerNoSee = true;
+			}
 		}
 	}
 	else
 	{
 		GetMesh()->SetVisibility(true);
-		if (Combat && Combat->EquippedWeapon && Combat->EquippedWeapon->GetWeaponMesh())
+		if (Combat)
 		{
-			Combat->EquippedWeapon->GetWeaponMesh()->bOwnerNoSee = false;
+			if (Combat->EquippedWeapon && Combat->EquippedWeapon->GetWeaponMesh())
+			{
+				Combat->EquippedWeapon->GetWeaponMesh()->bOwnerNoSee = false;
+			}
+			if (Combat->SecondaryWeapon && Combat->SecondaryWeapon->GetWeaponMesh())
+			{
+				Combat->SecondaryWeapon->GetWeaponMesh()->bOwnerNoSee = false;
+			}
 		}
 	}
 }
@@ -480,7 +503,15 @@ AWeapon* ABlasterCharacter::GetEquippedWeapon()
 void ABlasterCharacter::ServerEquipButtonPressed_Implementation()
 {
 	if (Combat) {
-		Combat->EquipWeapon(OverlappingWeapon);
+		if (OverlappingWeapon)
+		{
+			Combat->EquipWeapon(OverlappingWeapon);
+		}
+		else if(Combat->ShouldSwapWeapons())
+		{
+			Combat->SwapWeapons();
+		}
+		
 	}
 }
 

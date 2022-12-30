@@ -13,7 +13,18 @@ enum class EWeaponState : uint8 {
 	EWS_Initial UMETA(DisplayName = "IntialState"),
 	EWS_Equipped UMETA(DisplayName = "Equipped"),
 	EWS_Dropped UMETA(DisplayName = "Dropped"),
-	EWS_Max UMETA(DisplayName = "DefaultMAX"),
+	EWS_EquippedSecondary UMETA(DisplayName = "Equipped Secondary"),
+
+	EWS_MAX UMETA(DisplayName = "DefaultMAX"),
+};
+
+UENUM(BlueprintType)
+enum class EFireType : uint8 {
+	EFT_HitScan UMETA(DisplayName = "HitScan Weapon"),
+	EFT_Projectile UMETA(DisplayName = "Projectile Weapon"),
+	EFT_Shotgun UMETA(DisplayName = "Shotgun Weapon"),
+
+	EFT_MAX UMETA(DisplayName = "DefaultMAX"),
 };
 
 UCLASS()
@@ -25,10 +36,14 @@ public:
 
 	AWeapon();
 	virtual void Tick(float DeltaTime) override;
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+	virtual void OnRep_Owner() override;
+	void SetHUDAmmo();
 	void ShowPickupWidget(bool bShowWidget);
 	virtual void Fire(const FVector& HitTarget);
 	void Dropped();
 	void AddAmmo(int32 AmmoToAdd);
+	FVector TraceEndWithScatter(const FVector& HitTarget);
 
 	/**
 	* Textures for the weapon crosshairs
@@ -84,24 +99,45 @@ public:
 	bool bCanBeDropped{ true };
 
 	/**
+	*	Fire Type / Scatter
+	*/
+
+	UPROPERTY(EditAnywhere)
+	EFireType FireType{ EFireType::EFT_Projectile };
+
+	UPROPERTY(EditAnywhere, Category = "Weapon Scatter")
+	bool bUseScatter{ false };
+
+	/**
 	* Ammo
 	*/
 
-	void SetHUDAmmo();
+
 
 protected:
 
 	virtual void BeginPlay() override;
-
-	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
-
-	virtual void OnRep_Owner() override;
+	virtual void OnWeaponStateSet();
+	virtual void OnEquipped();
+	virtual void OnDropped();
+	virtual void OnEquippedSecondary();
 
 	UFUNCTION()
 	virtual void OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 	
 	UFUNCTION()
 	virtual void OnSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
+	/**
+	* Trace end with scatter
+	*/
+
+	UPROPERTY(EditAnywhere, Category = "Weapon Scatter")
+		float DistanceToSphere{ 800.f };
+
+
+	UPROPERTY(EditAnywhere, Category = "Weapon Scatter")
+		float SphereRadius{ 75.f };
 
 private:
 	
@@ -126,14 +162,23 @@ private:
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<class ACasing>CasingClass{ nullptr };
 
-	UPROPERTY(ReplicatedUsing = OnRep_Ammo, EditAnywhere)
+	UPROPERTY()
 	int32 Ammo{ 30 };
+
+	UFUNCTION(Client, Reliable)
+	void ClientUpdateAmmo(int32 ServerAmmo);
+
+	UFUNCTION(Client, Reliable)
+	void ClientAddAmmo(int32 AmmoToAdd);
 	
 	UPROPERTY(EditAnywhere)
 	int32 MagCapacity { 30 };
 
-	UFUNCTION()
-	void OnRep_Ammo();
+	/**
+	*	Number of unprocessed requests for Ammo
+	*	Incremented on SpendRound(), decremented on ClientUpdateAmmo()
+	*/
+	int32 Sequence{ 0 };
 
 	//Reduce ammo and check owner (to update HUD)
 	void SpendRound();
@@ -143,6 +188,8 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	EWeaponType WeaponType;
+
+
 
 public:
 	void SetWeaponState(EWeaponState State);

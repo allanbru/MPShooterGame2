@@ -2,6 +2,7 @@
 
 
 #include "BlasterPlayerController.h"
+#include "Components/Image.h"
 #include "Components/ProgressBar.h"
 #include "Components/TextBlock.h"
 #include "Kismet/GameplayStatics.h"
@@ -45,22 +46,49 @@ void ABlasterPlayerController::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	SetHUDTime();
-
 	CheckTimeSync(DeltaTime);
 	PollInit();
+	CheckPing(DeltaTime);
 }
 
-void ABlasterPlayerController::OnPossess(APawn* InPawn)
+void ABlasterPlayerController::CheckTimeSync(float DeltaTime)
 {
-	Super::OnPossess(InPawn);
-	ABlasterCharacter* BlasterCharacter = Cast<ABlasterCharacter>(InPawn);
-	if (BlasterCharacter)
+	TimeSyncRunningTime += DeltaTime;
+	if (IsLocalController() && TimeSyncRunningTime >= TimeSyncFrequency)
 	{
-		SetHUDHealth(BlasterCharacter->GetHealth(), BlasterCharacter->GetMaxHealth());
-		SetHUDShield(BlasterCharacter->GetShield(), BlasterCharacter->GetMaxShield());
-		BlasterCharacter->SetStartingWeaponClass(StartingWeaponClass);
-		BlasterCharacter->ServerEquipStartingWeapon();
-		BlasterCharacter->UpdateHUDAmmo();
+		ServerRequestServerTime(GetWorld()->GetTimeSeconds());
+		TimeSyncRunningTime = 0.f;
+	}
+}
+
+void ABlasterPlayerController::CheckPing(float DeltaTime)
+{
+	HighPingRunningTime += DeltaTime;
+	if (HighPingRunningTime > CheckPingFrequency)
+	{
+		PlayerState = (PlayerState == nullptr) ? GetPlayerState<APlayerState>() : PlayerState;
+		if (PlayerState)
+		{
+			//Due to compression, the real ping is PlayerState->GetPing() * 4
+			if (PlayerState->GetCompressedPing() * 4 > HighPingThreshold)
+			{
+				HighPingWarning();
+				PingAnimationRunningTime = 0.f;
+			}
+		}
+		HighPingRunningTime = 0.f;
+	}
+	bool bHighPingAnimationPlaying =
+		BlasterHUD && BlasterHUD->CharacterOverlay &&
+		BlasterHUD->CharacterOverlay->HighPingAnimation &&
+		BlasterHUD->CharacterOverlay->IsAnimationPlaying(BlasterHUD->CharacterOverlay->HighPingAnimation);
+	if (bHighPingAnimationPlaying)
+	{
+		PingAnimationRunningTime += DeltaTime;
+		if (PingAnimationRunningTime > HighPingDuration)
+		{
+			StopHighPingWarning();
+		}
 	}
 }
 
@@ -88,13 +116,47 @@ void ABlasterPlayerController::PollInit()
 	}
 }
 
-void ABlasterPlayerController::CheckTimeSync(float DeltaTime)
+void ABlasterPlayerController::OnPossess(APawn* InPawn)
 {
-	TimeSyncRunningTime += DeltaTime;
-	if (IsLocalController() && TimeSyncRunningTime >= TimeSyncFrequency)
+	Super::OnPossess(InPawn);
+	ABlasterCharacter* BlasterCharacter = Cast<ABlasterCharacter>(InPawn);
+	if (BlasterCharacter)
 	{
-		ServerRequestServerTime(GetWorld()->GetTimeSeconds());
-		TimeSyncRunningTime = 0.f;
+		SetHUDHealth(BlasterCharacter->GetHealth(), BlasterCharacter->GetMaxHealth());
+		SetHUDShield(BlasterCharacter->GetShield(), BlasterCharacter->GetMaxShield());
+		BlasterCharacter->SetStartingWeaponClass(StartingWeaponClass);
+		BlasterCharacter->ServerEquipStartingWeapon();
+		BlasterCharacter->UpdateHUDAmmo();
+	}
+}
+
+void ABlasterPlayerController::HighPingWarning()
+{
+	BlasterHUD = (BlasterHUD == nullptr) ? Cast<ABlasterHUD>(GetHUD()) : BlasterHUD;
+	bool bHUDValid = BlasterHUD &&
+		BlasterHUD->CharacterOverlay &&
+		BlasterHUD->CharacterOverlay->HighPingImage &&
+		BlasterHUD->CharacterOverlay->HighPingAnimation;
+	if (bHUDValid)
+	{
+		BlasterHUD->CharacterOverlay->HighPingImage->SetOpacity(1.f);
+		BlasterHUD->CharacterOverlay->PlayAnimation(BlasterHUD->CharacterOverlay->HighPingAnimation, 0.f, 5);
+	}
+}
+
+void ABlasterPlayerController::StopHighPingWarning()
+{
+	BlasterHUD = (BlasterHUD == nullptr) ? Cast<ABlasterHUD>(GetHUD()) : BlasterHUD;
+	bool bHUDValid = BlasterHUD &&
+		BlasterHUD->CharacterOverlay &&
+		BlasterHUD->CharacterOverlay->HighPingImage &&
+		BlasterHUD->CharacterOverlay->HighPingAnimation;
+	if (bHUDValid)
+	{
+		BlasterHUD->CharacterOverlay->HighPingImage->SetOpacity(0.f);
+		if (BlasterHUD->CharacterOverlay->IsAnimationPlaying(BlasterHUD->CharacterOverlay->HighPingAnimation)) {
+			BlasterHUD->CharacterOverlay->StopAnimation(BlasterHUD->CharacterOverlay->HighPingAnimation);
+		}
 	}
 }
 
