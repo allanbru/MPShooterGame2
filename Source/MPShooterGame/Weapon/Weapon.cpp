@@ -236,10 +236,8 @@ void AWeapon::OnRep_WeaponState()
 void AWeapon::OnEquipped()
 {
 	ShowPickupWidget(false);
-	if (HasAuthority())
-	{
-		AreaSphere->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	}
+
+	AreaSphere->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	WeaponMesh->SetSimulatePhysics(false);
 	WeaponMesh->SetEnableGravity(false);
 	WeaponMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
@@ -254,10 +252,7 @@ void AWeapon::OnEquipped()
 
 void AWeapon::OnDropped()
 {
-	if (HasAuthority())
-	{
-		AreaSphere->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-	}
+	AreaSphere->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	WeaponMesh->SetSimulatePhysics(true);
 	WeaponMesh->SetEnableGravity(true);
 	WeaponMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
@@ -270,10 +265,7 @@ void AWeapon::OnDropped()
 void AWeapon::OnEquippedSecondary()
 {
 	ShowPickupWidget(false);
-	if (HasAuthority())
-	{
-		AreaSphere->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	}
+	AreaSphere->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	WeaponMesh->SetSimulatePhysics(false);
 	WeaponMesh->SetEnableGravity(false);
 	WeaponMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);

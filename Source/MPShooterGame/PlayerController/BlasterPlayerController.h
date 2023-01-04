@@ -44,6 +44,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SetStartingWeaponClass(TSubclassOf<AWeapon> WeaponClass);
 
+	float SingleTripTime{ 0.f };
 protected:
 	
 	virtual void BeginPlay() override;

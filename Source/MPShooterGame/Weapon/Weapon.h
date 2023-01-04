@@ -133,11 +133,20 @@ protected:
 	*/
 
 	UPROPERTY(EditAnywhere, Category = "Weapon Scatter")
-		float DistanceToSphere{ 800.f };
+	float DistanceToSphere{ 800.f };
 
 
 	UPROPERTY(EditAnywhere, Category = "Weapon Scatter")
-		float SphereRadius{ 75.f };
+	float SphereRadius{ 75.f };
+
+	UPROPERTY(EditAnywhere)
+	float Damage{ 20.f };
+
+	UPROPERTY(EditAnywhere)
+	bool bUseServerSideRewind{ false };
+
+	class ABlasterCharacter* BlasterOwnerCharacter{ nullptr };
+	class ABlasterPlayerController* BlasterOwnerController{ nullptr };
 
 private:
 	
@@ -183,9 +192,6 @@ private:
 	//Reduce ammo and check owner (to update HUD)
 	void SpendRound();
 
-	class ABlasterCharacter* BlasterOwnerCharacter{ nullptr };
-	class ABlasterPlayerController* BlasterOwnerController{ nullptr };
-
 	UPROPERTY(EditAnywhere)
 	EWeaponType WeaponType;
 
@@ -202,4 +208,5 @@ public:
 	FORCEINLINE EWeaponType GetWeaponType() const { return WeaponType; }
 	FORCEINLINE int32 GetAmmo() const { return Ammo; }
 	FORCEINLINE int32 GetMagCapacity() const { return MagCapacity; }
+	FORCEINLINE float GetDamage() const { return Damage; }
 };

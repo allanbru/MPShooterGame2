@@ -179,6 +179,7 @@ bool UCombatComponent::CanFire()
 {
 	if (EquippedWeapon == nullptr) return false;
 	if (EquippedWeapon->IsEmpty() || !bCanFire) return false;
+	if (bLocallyReloading) return false;
 	if (CombatState != ECombatState::ECS_Unoccupied && (EquippedWeapon->GetWeaponType() != EWeaponType:: EWT_Shotgun)) return false;
 	return true;
 }
@@ -399,10 +400,11 @@ void UCombatComponent::ReloadEmptyWeapon()
 
 void UCombatComponent::Reload()
 {
-	if (CarriedAmmo > 0 && CombatState == ECombatState::ECS_Unoccupied && EquippedWeapon && !EquippedWeapon->IsFull())
+	if (CarriedAmmo > 0 && CombatState == ECombatState::ECS_Unoccupied && !bLocallyReloading && EquippedWeapon && !EquippedWeapon->IsFull())
 	{
 		ServerReload();
 		HandleReload();
+		bLocallyReloading = true;
 	}
 }
 
@@ -417,6 +419,7 @@ void UCombatComponent::ServerReload_Implementation()
 void UCombatComponent::FinishReloading()
 {
 	if (Character == nullptr) return;
+	bLocallyReloading = false;
 	if (Character->HasAuthority()) 
 	{
 		UpdateAmmoValues();
