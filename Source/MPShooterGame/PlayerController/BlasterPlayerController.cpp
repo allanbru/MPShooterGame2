@@ -61,37 +61,6 @@ void ABlasterPlayerController::CheckTimeSync(float DeltaTime)
 	}
 }
 
-void ABlasterPlayerController::CheckPing(float DeltaTime)
-{
-	HighPingRunningTime += DeltaTime;
-	if (HighPingRunningTime > CheckPingFrequency)
-	{
-		PlayerState = (PlayerState == nullptr) ? GetPlayerState<APlayerState>() : PlayerState;
-		if (PlayerState)
-		{
-			//Due to compression, the real ping is PlayerState->GetPing() * 4
-			if (PlayerState->GetCompressedPing() * 4 > HighPingThreshold)
-			{
-				HighPingWarning();
-				PingAnimationRunningTime = 0.f;
-			}
-		}
-		HighPingRunningTime = 0.f;
-	}
-	bool bHighPingAnimationPlaying =
-		BlasterHUD && BlasterHUD->CharacterOverlay &&
-		BlasterHUD->CharacterOverlay->HighPingAnimation &&
-		BlasterHUD->CharacterOverlay->IsAnimationPlaying(BlasterHUD->CharacterOverlay->HighPingAnimation);
-	if (bHighPingAnimationPlaying)
-	{
-		PingAnimationRunningTime += DeltaTime;
-		if (PingAnimationRunningTime > HighPingDuration)
-		{
-			StopHighPingWarning();
-		}
-	}
-}
-
 void ABlasterPlayerController::PollInit()
 {
 	if (CharacterOverlay == nullptr)
@@ -114,6 +83,48 @@ void ABlasterPlayerController::PollInit()
 			}
 		}
 	}
+}
+
+void ABlasterPlayerController::CheckPing(float DeltaTime)
+{
+	HighPingRunningTime += DeltaTime;
+	if (HighPingRunningTime > CheckPingFrequency)
+	{
+		PlayerState = (PlayerState == nullptr) ? GetPlayerState<APlayerState>() : PlayerState;
+		if (PlayerState)
+		{
+			//Due to compression, the real ping is PlayerState->GetPing() * 4
+			if (PlayerState->GetCompressedPing() * 4 > HighPingThreshold)
+			{
+				HighPingWarning();
+				PingAnimationRunningTime = 0.f;
+				ServerReportPingStatus(true);
+			}
+			else
+			{
+				ServerReportPingStatus(false);
+			}
+		}
+		HighPingRunningTime = 0.f;
+	}
+	bool bHighPingAnimationPlaying =
+		BlasterHUD && BlasterHUD->CharacterOverlay &&
+		BlasterHUD->CharacterOverlay->HighPingAnimation &&
+		BlasterHUD->CharacterOverlay->IsAnimationPlaying(BlasterHUD->CharacterOverlay->HighPingAnimation);
+	if (bHighPingAnimationPlaying)
+	{
+		PingAnimationRunningTime += DeltaTime;
+		if (PingAnimationRunningTime > HighPingDuration)
+		{
+			StopHighPingWarning();
+		}
+	}
+}
+
+//Is the ping too high?
+void ABlasterPlayerController::ServerReportPingStatus_Implementation(bool bHighPing)
+{
+	HighPingDelegate.Broadcast(bHighPing);
 }
 
 void ABlasterPlayerController::OnPossess(APawn* InPawn)

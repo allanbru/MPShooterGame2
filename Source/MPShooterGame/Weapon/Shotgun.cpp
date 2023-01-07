@@ -5,7 +5,9 @@
 #include "Engine/SkeletalMeshSocket.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "MPShooterGame/BlasterComponents/LagCompensationComponent.h"
 #include "MPShooterGame/Character/BlasterCharacter.h"
+#include "MPShooterGame/PlayerController/BlasterPlayerController.h"
 #include "Particles/ParticleSystemComponent.h"
 #include "Sound/SoundCue.h"
 
@@ -53,19 +55,40 @@ void AShotgun::FireShotgun(const TArray<FVector_NetQuantize>& HitTargets)
 			}
 		}
 		
-		//Apply damage needs authority and instigator controller
-		if (HasAuthority() && InstigatorController)
+		//Apply damage needs instigator controller
+		if (InstigatorController)
 		{
+			TArray<ABlasterCharacter*> HitCharacters;
 			for (auto HitPair : HitMap)
 			{
 				if (HitPair.Key)
 				{
-					UGameplayStatics::ApplyDamage(
-						HitPair.Key, // Character hit
-						Damage * HitPair.Value, // Damage * #hits
-						InstigatorController,
-						this,
-						UDamageType::StaticClass()
+					HitCharacters.Add(HitPair.Key);
+					bool bCauseAuthoritativeDamage = !bUseServerSideRewind || OwnerPawn->IsLocallyControlled();
+					if (bCauseAuthoritativeDamage && HasAuthority())
+					{
+						UGameplayStatics::ApplyDamage(
+							HitPair.Key, // Character hit
+							Damage * HitPair.Value, // Damage * #hits
+							InstigatorController,
+							this,
+							UDamageType::StaticClass()
+						);
+					}
+				}
+			}
+			if (bUseServerSideRewind && !HasAuthority())
+			{
+				BlasterOwnerCharacter = (BlasterOwnerCharacter == nullptr) ? Cast<ABlasterCharacter>(OwnerPawn) : BlasterOwnerCharacter;
+				BlasterOwnerController = (BlasterOwnerController == nullptr) ? Cast<ABlasterPlayerController>(InstigatorController) : BlasterOwnerController;
+				if (BlasterOwnerCharacter && BlasterOwnerCharacter->IsLocallyControlled() && BlasterOwnerController && BlasterOwnerCharacter->GetLagCompensation())
+				{
+					BlasterOwnerCharacter->GetLagCompensation()->ShotgunServerScoreRequest(
+						HitCharacters, 
+						Start, 
+						HitTargets, 
+						BlasterOwnerController->GetServerTime() - BlasterOwnerController->SingleTripTime, 
+						this
 					);
 				}
 			}
