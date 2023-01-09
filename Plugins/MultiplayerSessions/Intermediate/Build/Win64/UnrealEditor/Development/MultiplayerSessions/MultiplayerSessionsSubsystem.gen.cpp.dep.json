@@ -1,0 +1,24 @@
+{
+    "Version": "1.2",
+    "Data": {
+        "Source": "e:\\unreal\\mpshootergame 5.1\\plugins\\multiplayersessions\\intermediate\\build\\win64\\unrealeditor\\inc\\multiplayersessions\\uht\\multiplayersessionssubsystem.gen.cpp",
+        "ProvidedModule": "",
+        "PCH": "e:\\unreal\\mpshootergame 5.1\\intermediate\\build\\win64\\mpshootergameeditor\\development\\engine\\sharedpch.engine.shadowerrors.inclorderunreal5_0.h.pch",
+        "Includes": [
+            "e:\\unreal\\mpshootergame 5.1\\plugins\\multiplayersessions\\intermediate\\build\\win64\\unrealeditor\\development\\multiplayersessions\\definitions.multiplayersessions.h",
+            "e:\\unreal\\mpshootergame 5.1\\plugins\\multiplayersessions\\source\\multiplayersessions\\public\\multiplayersessionssubsystem.h",
+            "e:\\epic games\\ue_5.1\\engine\\plugins\\online\\onlinesubsystem\\source\\public\\interfaces\\onlinesessioninterface.h",
+            "e:\\epic games\\ue_5.1\\engine\\plugins\\online\\onlinesubsystem\\source\\public\\onlinesubsystemtypes.h",
+            "e:\\epic games\\ue_5.1\\engine\\plugins\\online\\onlinebase\\source\\public\\online\\onlinebase.h",
+            "e:\\epic games\\ue_5.1\\engine\\plugins\\online\\onlinesubsystem\\source\\public\\onlinesubsystemnames.h",
+            "e:\\epic games\\ue_5.1\\engine\\plugins\\online\\onlinesubsystem\\source\\public\\onlinesubsystempackage.h",
+            "e:\\epic games\\ue_5.1\\engine\\plugins\\online\\onlinesubsystem\\source\\public\\onlinedelegatemacros.h",
+            "e:\\epic games\\ue_5.1\\engine\\plugins\\online\\onlinesubsystem\\source\\public\\interfaces\\onlinesessiondelegates.h",
+            "e:\\epic games\\ue_5.1\\engine\\plugins\\online\\onlinesubsystem\\source\\public\\onlinekeyvaluepair.h",
+            "e:\\epic games\\ue_5.1\\engine\\plugins\\online\\onlinesubsystem\\source\\public\\onlinesubsystempackage.h",
+            "e:\\unreal\\mpshootergame 5.1\\plugins\\multiplayersessions\\intermediate\\build\\win64\\unrealeditor\\inc\\multiplayersessions\\uht\\multiplayersessionssubsystem.generated.h"
+        ],
+        "ImportedModules": [],
+        "ImportedHeaderUnits": []
+    }
+}

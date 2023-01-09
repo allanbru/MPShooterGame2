@@ -50,6 +50,8 @@ public:
 	
 	FHighPingDelegate HighPingDelegate;
 
+	void BroadcastElim(APlayerState* Attacker, APlayerState* Victim);
+
 protected:
 	
 	virtual void BeginPlay() override;
@@ -86,6 +88,11 @@ protected:
 	void StopHighPingWarning();
 	void CheckPing(float DeltaTime);
 
+	void ShowReturnToMainMenu();
+
+	UFUNCTION(Client, Reliable)
+	void ClientElimAnnouncement(APlayerState* Attacker, APlayerState* Victim);
+
 private:
 
 	UPROPERTY()
@@ -94,6 +101,15 @@ private:
 	UPROPERTY()
 	class ABlasterGameMode* BlasterGameMode{ nullptr };
 	
+	/**
+	* Return to main menu
+	*/
+	UPROPERTY(EditAnywhere, Category = HUD)
+	TSubclassOf<class UUserWidget> ReturnToMainMenuWidget;
+	class UReturnToMainMenu* ReturnToMainMenu;
+
+	bool bReturnToMainMenuOpen{ false };
+
 	float LevelStartingTime{ 0.f };
 	float MatchTime{ 0.f };
 	float WarmupTime{ 0.f };
@@ -140,7 +156,7 @@ private:
 	void ServerReportPingStatus(bool bHighPing);
 
 	UPROPERTY(EditAnywhere)
-	float HighPingThreshold{ 200.f };
+	float HighPingThreshold{ 300.f };
 
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<AWeapon> StartingWeaponClass;

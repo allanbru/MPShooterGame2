@@ -31,7 +31,16 @@ public:
 	UPROPERTY(EditAnywhere)
 	float InitialSpeed{ 15000.f };
 
+	// Only has effect in Grenades and Rockets, since projectile weapons damage overrides this damage upon spawning.
+	UPROPERTY(EditAnywhere)
 	float Damage{ 20.f };
+
+	// No effects at all. Projectiles weapon override this value upon spawning.
+	UPROPERTY(EditAnywhere)
+	float HeadshotDamage{ 40.f };
+
+	UPROPERTY()
+	class AWeapon* OwningWeapon;
 
 protected:
 	virtual void BeginPlay() override;

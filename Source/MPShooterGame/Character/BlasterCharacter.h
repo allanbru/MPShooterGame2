@@ -12,6 +12,8 @@
 #include "BlasterCharacter.generated.h"
 
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnLeftGame);
+
 UCLASS()
 class MPSHOOTERGAME_API ABlasterCharacter : public ACharacter, public IInteractWithCrosshairsInterface
 {
@@ -36,9 +38,9 @@ public:
 
 	virtual void OnRep_ReplicatedMovement() override;
 
-	void Elim(); //Server Only
+	void Elim(bool bPlayerLeftGame); //Server Only
 	UFUNCTION(NetMulticast, Reliable)
-	void MulticastElim();
+	void MulticastElim(bool bPlayerLeftGame);
 
 	virtual void Destroyed() override;
 
@@ -67,6 +69,17 @@ public:
 	TMap<FName, class UBoxComponent*> HitCollisionBoxes;
 
 	bool bFinishedSwapping{ true };
+
+	FOnLeftGame OnLeftGame;
+
+	UFUNCTION(Server, Reliable)
+	void ServerLeaveGame();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastGainTheLead();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastLostTheLead();
 
 protected:
 	
@@ -275,6 +288,7 @@ private:
 
 	void ElimTimerFinished();
 
+	bool bLeftGame{ false };
 	/**
 	* Dissolve Effect
 	*/
@@ -299,7 +313,7 @@ private:
 	UMaterialInstance* DissolveMaterialInstance{ nullptr };
 
 	/**
-	* Elim bot effects
+	* Elim effects
 	*/
 
 	UPROPERTY(EditAnywhere)
@@ -311,6 +325,12 @@ private:
 	UPROPERTY(EditAnywhere)
 	class USoundCue* ElimBotSound{ nullptr };
 
+	UPROPERTY(EditAnywhere)
+	class UNiagaraSystem* CrownSystem;
+
+	UPROPERTY()
+	class UNiagaraComponent* CrownComponent;
+	
 	/**
 	* Grenade
 	*/

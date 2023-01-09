@@ -11,6 +11,7 @@
 /DELAY:UNLOAD
 /DLL
 /PDBALTPATH:%_PDB%
+/fastfail
 /OPT:NOREF
 /OPT:NOICF
 /INCREMENTAL:NO
@@ -18,8 +19,7 @@
 /ignore:4099
 /DELAYLOAD:"d3d12.dll"
 /DELAYLOAD:"DBGHELP.DLL"
-/LIBPATH:"F:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.33.31629\lib\x64"
-/LIBPATH:"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.8\lib\um\x64"
+/LIBPATH:"F:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.34.31933\lib\x64"
 /LIBPATH:"C:\Program Files (x86)\Windows Kits\10\lib\10.0.19041.0\ucrt\x64"
 /LIBPATH:"C:\Program Files (x86)\Windows Kits\10\lib\10.0.19041.0\um\x64"
 /NODEFAULTLIB:"LIBCMT"
@@ -32,11 +32,14 @@
 /NODEFAULTLIB:"LIBCP"
 /NODEFAULTLIB:"LIBCD"
 /NODEFAULTLIB:"LIBCPD"
-/FUNCTIONPADMIN
-"E:\Unreal\MPShooterGame\Intermediate\Build\Win64\MPShooterGameEditor\DebugGame\Engine\SharedPCH.Engine.NonOptimized.ShadowErrors.h.obj"
-"E:\Unreal\MPShooterGame\Plugins\MultiplayerSessions\Intermediate\Build\Win64\UnrealEditor\DebugGame\MultiplayerSessions\Module.MultiplayerSessions.cpp.obj"
-"E:\Unreal\MPShooterGame\Plugins\MultiplayerSessions\Intermediate\Build\Win64\UnrealEditor\DebugGame\MultiplayerSessions\Module.MultiplayerSessions.gen.cpp.obj"
-"E:\Unreal\MPShooterGame\Plugins\MultiplayerSessions\Intermediate\Build\Win64\UnrealEditor\DebugGame\MultiplayerSessions\Default.rc2.res"
+/FUNCTIONPADMIN:6
+"E:\Unreal\MPShooterGame 5.1\Intermediate\Build\Win64\MPShooterGameEditor\DebugGame\Engine\SharedPCH.Engine.NonOptimized.ShadowErrors.InclOrderUnreal5_0.h.obj"
+"E:\Unreal\MPShooterGame 5.1\Plugins\MultiplayerSessions\Intermediate\Build\Win64\UnrealEditor\DebugGame\MultiplayerSessions\Module.MultiplayerSessions.cpp.obj"
+"E:\Unreal\MPShooterGame 5.1\Plugins\MultiplayerSessions\Intermediate\Build\Win64\UnrealEditor\DebugGame\MultiplayerSessions\Menu.cpp.obj"
+"E:\Unreal\MPShooterGame 5.1\Plugins\MultiplayerSessions\Intermediate\Build\Win64\UnrealEditor\DebugGame\MultiplayerSessions\Menu.gen.cpp.obj"
+"E:\Unreal\MPShooterGame 5.1\Plugins\MultiplayerSessions\Intermediate\Build\Win64\UnrealEditor\DebugGame\MultiplayerSessions\MultiplayerSessions.init.gen.cpp.obj"
+"E:\Unreal\MPShooterGame 5.1\Plugins\MultiplayerSessions\Intermediate\Build\Win64\UnrealEditor\DebugGame\MultiplayerSessions\MultiplayerSessionsSubsystem.gen.cpp.obj"
+"E:\Unreal\MPShooterGame 5.1\Plugins\MultiplayerSessions\Intermediate\Build\Win64\UnrealEditor\DebugGame\MultiplayerSessions\Default.rc2.res"
 "..\Intermediate\Build\Win64\UnrealEditor\Development\CoreUObject\UnrealEditor-CoreUObject.lib"
 "..\Intermediate\Build\Win64\UnrealEditor\Development\Engine\UnrealEditor-Engine.lib"
 "..\Intermediate\Build\Win64\UnrealEditor\Development\Slate\UnrealEditor-Slate.lib"
@@ -69,7 +72,7 @@
 "setupapi.lib"
 "dwmapi.lib"
 "imm32.lib"
-/OUT:"E:\Unreal\MPShooterGame\Plugins\MultiplayerSessions\Binaries\Win64\UnrealEditor-MultiplayerSessions-Win64-DebugGame.dll"
-/IMPLIB:"E:\Unreal\MPShooterGame\Plugins\MultiplayerSessions\Intermediate\Build\Win64\UnrealEditor\DebugGame\MultiplayerSessions\UnrealEditor-MultiplayerSessions-Win64-DebugGame.suppressed.lib"
-/PDB:"E:\Unreal\MPShooterGame\Plugins\MultiplayerSessions\Binaries\Win64\UnrealEditor-MultiplayerSessions-Win64-DebugGame.pdb"
+/OUT:"E:\Unreal\MPShooterGame 5.1\Plugins\MultiplayerSessions\Binaries\Win64\UnrealEditor-MultiplayerSessions-Win64-DebugGame.dll"
+/IMPLIB:"E:\Unreal\MPShooterGame 5.1\Plugins\MultiplayerSessions\Intermediate\Build\Win64\UnrealEditor\DebugGame\MultiplayerSessions\UnrealEditor-MultiplayerSessions-Win64-DebugGame.suppressed.lib"
+/PDB:"E:\Unreal\MPShooterGame 5.1\Plugins\MultiplayerSessions\Binaries\Win64\UnrealEditor-MultiplayerSessions-Win64-DebugGame.pdb"
 /ignore:4078

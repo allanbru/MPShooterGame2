@@ -26,6 +26,7 @@ void AShotgun::FireShotgun(const TArray<FVector_NetQuantize>& HitTargets)
 
 		//Maps each hit character to number of times hit
 		TMap<ABlasterCharacter*, uint32> HitMap;
+		TMap<ABlasterCharacter*, uint32> HeadshotHitMap;
 		for (FVector_NetQuantize HitTarget : HitTargets)
 		{
 			FHitResult FireHit;
@@ -34,13 +35,22 @@ void AShotgun::FireShotgun(const TArray<FVector_NetQuantize>& HitTargets)
 			ABlasterCharacter* BlasterCharacter = Cast<ABlasterCharacter>(FireHit.GetActor());
 			if (BlasterCharacter)
 			{
-				if (HitMap.Contains(BlasterCharacter))
+
+				const bool bHeadshot = FireHit.BoneName.ToString() == FString("head");
+
+				if (bHeadshot)
 				{
-					HitMap[BlasterCharacter]++;
+					if (HeadshotHitMap.Contains(BlasterCharacter)) HeadshotHitMap[BlasterCharacter]++;
+					else HeadshotHitMap.Emplace(BlasterCharacter, 1);
 				}
-				else {
-					HitMap.Emplace(BlasterCharacter, 1);
+				else
+				{
+					if (HitMap.Contains(BlasterCharacter)) HitMap[BlasterCharacter]++;
+					else HitMap.Emplace(BlasterCharacter, 1);
 				}
+				
+
+
 
 			}
 
@@ -55,42 +65,66 @@ void AShotgun::FireShotgun(const TArray<FVector_NetQuantize>& HitTargets)
 			}
 		}
 		
-		//Apply damage needs instigator controller
-		if (InstigatorController)
+		// Apply damage needs instigator controller
+
+		TArray<ABlasterCharacter*> HitCharacters;
+		TMap<ABlasterCharacter*, float> DamageMap;
+
+		// Calc body shots dmg
+		for (auto HitPair : HitMap)
 		{
-			TArray<ABlasterCharacter*> HitCharacters;
-			for (auto HitPair : HitMap)
+			if (HitPair.Key)
 			{
-				if (HitPair.Key)
-				{
-					HitCharacters.Add(HitPair.Key);
-					bool bCauseAuthoritativeDamage = !bUseServerSideRewind || OwnerPawn->IsLocallyControlled();
-					if (bCauseAuthoritativeDamage && HasAuthority())
-					{
-						UGameplayStatics::ApplyDamage(
-							HitPair.Key, // Character hit
-							Damage * HitPair.Value, // Damage * #hits
-							InstigatorController,
-							this,
-							UDamageType::StaticClass()
-						);
-					}
-				}
+				HitCharacters.AddUnique(HitPair.Key);
+
+				DamageMap.Emplace(HitPair.Key, HitPair.Value * Damage);
 			}
-			if (bUseServerSideRewind && !HasAuthority())
+		}
+			
+		// Calc HS dmg
+		for (auto HeadshotHitPair : HeadshotHitMap)
+		{
+			if (HeadshotHitPair.Key)
 			{
-				BlasterOwnerCharacter = (BlasterOwnerCharacter == nullptr) ? Cast<ABlasterCharacter>(OwnerPawn) : BlasterOwnerCharacter;
-				BlasterOwnerController = (BlasterOwnerController == nullptr) ? Cast<ABlasterPlayerController>(InstigatorController) : BlasterOwnerController;
-				if (BlasterOwnerCharacter && BlasterOwnerCharacter->IsLocallyControlled() && BlasterOwnerController && BlasterOwnerCharacter->GetLagCompensation())
+				HitCharacters.AddUnique(HeadshotHitPair.Key);
+
+				if (DamageMap.Contains(HeadshotHitPair.Key)) DamageMap[HeadshotHitPair.Key] += HeadshotHitPair.Value * HeadshotDamage;
+				else HitMap.Emplace(HeadshotHitPair.Key, HeadshotHitPair.Value * HeadshotDamage);
+			}
+		}
+
+		//Apply total dmg to each character
+		for (auto DamagePair : DamageMap)
+		{
+			if (DamagePair.Key && InstigatorController)
+			{
+				bool bCauseAuthoritativeDamage = !bUseServerSideRewind || OwnerPawn->IsLocallyControlled();
+				if (bCauseAuthoritativeDamage && HasAuthority())
 				{
-					BlasterOwnerCharacter->GetLagCompensation()->ShotgunServerScoreRequest(
-						HitCharacters, 
-						Start, 
-						HitTargets, 
-						BlasterOwnerController->GetServerTime() - BlasterOwnerController->SingleTripTime, 
-						this
+					UGameplayStatics::ApplyDamage(
+						DamagePair.Key, // Character hit
+						DamagePair.Value, // Damage calculated in the 2 loops above
+						InstigatorController,
+						this,
+						UDamageType::StaticClass()
 					);
 				}
+			}
+		}
+
+		if (bUseServerSideRewind && !HasAuthority())
+		{
+			BlasterOwnerCharacter = (BlasterOwnerCharacter == nullptr) ? Cast<ABlasterCharacter>(OwnerPawn) : BlasterOwnerCharacter;
+			BlasterOwnerController = (BlasterOwnerController == nullptr) ? Cast<ABlasterPlayerController>(InstigatorController) : BlasterOwnerController;
+			if (BlasterOwnerCharacter && BlasterOwnerCharacter->IsLocallyControlled() && BlasterOwnerController && BlasterOwnerCharacter->GetLagCompensation())
+			{
+				BlasterOwnerCharacter->GetLagCompensation()->ShotgunServerScoreRequest(
+					HitCharacters, 
+					Start, 
+					HitTargets, 
+					BlasterOwnerController->GetServerTime() - BlasterOwnerController->SingleTripTime, 
+					this
+				);
 			}
 		}
 	}

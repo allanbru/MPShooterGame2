@@ -1,33 +1,34 @@
-E:\Unreal\MPShooterGame\Plugins\MultiplayerSessions\Intermediate\Build\Win64\UnrealGame\Development\MultiplayerSessions\Module.MultiplayerSessions.cpp
+"E:\Unreal\MPShooterGame 5.1\Plugins\MultiplayerSessions\Intermediate\Build\Win64\UnrealGame\Development\MultiplayerSessions\Module.MultiplayerSessions.cpp"
 /I .
-/I E:\Unreal\MPShooterGame\Plugins\MultiplayerSessions\Source\MultiplayerSessions\Private
-/I ..\Intermediate\Build\Win64\UnrealGame\Inc\CoreUObject
+/I "E:\Unreal\MPShooterGame 5.1\Plugins\MultiplayerSessions\Source\MultiplayerSessions\Private"
+/I ..\Intermediate\Build\Win64\UnrealGame\Inc\CoreUObject\UHT
 /I Runtime
 /I Runtime\CoreUObject\Public
 /I Runtime\TraceLog\Public
 /I Runtime\Core\Public
-/I ..\Intermediate\Build\Win64\UnrealGame\Inc\Engine
+/I ..\Intermediate\Build\Win64\UnrealGame\Inc\Engine\UHT
 /I ..\Shaders\Shared
 /I Runtime\Engine\Classes
 /I Runtime\Engine\Public
-/I ..\Intermediate\Build\Win64\UnrealGame\Inc\CoreOnline
+/I ..\Intermediate\Build\Win64\UnrealGame\Inc\CoreOnline\UHT
 /I Runtime\CoreOnline\Public
-/I ..\Intermediate\Build\Win64\UnrealGame\Inc\NetCore
+/I ..\Intermediate\Build\Win64\UnrealGame\Inc\NetCore\UHT
 /I Runtime\Net
 /I Runtime\Net\Core\Classes
 /I Runtime\Net\Core\Public
 /I Runtime\Net\Common\Public
 /I Runtime\ApplicationCore\Public
 /I Runtime\RHI\Public
+/I Runtime\ImageCore\Public
 /I Runtime\Json\Public
-/I ..\Intermediate\Build\Win64\UnrealGame\Inc\JsonUtilities
+/I ..\Intermediate\Build\Win64\UnrealGame\Inc\JsonUtilities\UHT
 /I Runtime\JsonUtilities\Public
-/I ..\Intermediate\Build\Win64\UnrealGame\Inc\SlateCore
+/I ..\Intermediate\Build\Win64\UnrealGame\Inc\SlateCore\UHT
 /I Runtime\SlateCore\Public
-/I ..\Intermediate\Build\Win64\UnrealGame\Inc\InputCore
+/I ..\Intermediate\Build\Win64\UnrealGame\Inc\InputCore\UHT
 /I Runtime\InputCore\Classes
 /I Runtime\InputCore\Public
-/I ..\Intermediate\Build\Win64\UnrealGame\Inc\Slate
+/I ..\Intermediate\Build\Win64\UnrealGame\Inc\Slate\UHT
 /I Runtime\Slate\Public
 /I Runtime\ImageWrapper\Public
 /I ThirdParty
@@ -38,41 +39,41 @@ E:\Unreal\MPShooterGame\Plugins\MultiplayerSessions\Intermediate\Build\Win64\Unr
 /I Runtime\Analytics\AnalyticsET\Public
 /I Runtime\Analytics\Analytics\Public
 /I Runtime\Sockets\Public
-/I ..\Intermediate\Build\Win64\UnrealGame\Inc\AssetRegistry
+/I ..\Intermediate\Build\Win64\UnrealGame\Inc\AssetRegistry\UHT
 /I Runtime\AssetRegistry\Public
-/I ..\Intermediate\Build\Win64\UnrealGame\Inc\EngineMessages
+/I ..\Intermediate\Build\Win64\UnrealGame\Inc\EngineMessages\UHT
 /I Runtime\EngineMessages\Public
-/I ..\Intermediate\Build\Win64\UnrealGame\Inc\EngineSettings
+/I ..\Intermediate\Build\Win64\UnrealGame\Inc\EngineSettings\UHT
 /I Runtime\EngineSettings\Classes
 /I Runtime\EngineSettings\Public
 /I Runtime\SynthBenchmark\Public
 /I Runtime\Renderer\Public
-/I ..\Intermediate\Build\Win64\UnrealGame\Inc\GameplayTags
+/I ..\Intermediate\Build\Win64\UnrealGame\Inc\GameplayTags\UHT
 /I Runtime\GameplayTags\Classes
 /I Runtime\GameplayTags\Public
-/I ..\Intermediate\Build\Win64\UnrealGame\Inc\DeveloperSettings
+/I ..\Intermediate\Build\Win64\UnrealGame\Inc\DeveloperSettings\UHT
 /I Runtime\DeveloperSettings\Public
-/I ..\Intermediate\Build\Win64\UnrealGame\Inc\PacketHandler
+/I ..\Intermediate\Build\Win64\UnrealGame\Inc\PacketHandler\UHT
 /I Runtime\PacketHandlers
 /I Runtime\PacketHandlers\PacketHandler\Classes
 /I Runtime\PacketHandlers\PacketHandler\Public
 /I Runtime\PacketHandlers\ReliabilityHandlerComponent\Public
-/I ..\Intermediate\Build\Win64\UnrealGame\Inc\AudioPlatformConfiguration
+/I ..\Intermediate\Build\Win64\UnrealGame\Inc\AudioPlatformConfiguration\UHT
 /I Runtime\AudioPlatformConfiguration\Public
-/I ..\Intermediate\Build\Win64\UnrealGame\Inc\MeshDescription
+/I ..\Intermediate\Build\Win64\UnrealGame\Inc\MeshDescription\UHT
 /I Runtime\MeshDescription\Public
-/I ..\Intermediate\Build\Win64\UnrealGame\Inc\StaticMeshDescription
+/I ..\Intermediate\Build\Win64\UnrealGame\Inc\StaticMeshDescription\UHT
 /I Runtime\StaticMeshDescription\Public
 /I Runtime\SkeletalMeshDescription\Public
-/I ..\Intermediate\Build\Win64\UnrealGame\Inc\AnimationCore
+/I ..\Intermediate\Build\Win64\UnrealGame\Inc\AnimationCore\UHT
 /I Runtime\AnimationCore\Public
 /I Runtime\PakFile\Public
 /I Runtime\RSA\Public
 /I Runtime\NetworkReplayStreaming
 /I Runtime\NetworkReplayStreaming\NetworkReplayStreaming\Public
-/I ..\Intermediate\Build\Win64\UnrealGame\Inc\PhysicsCore
+/I ..\Intermediate\Build\Win64\UnrealGame\Inc\PhysicsCore\UHT
 /I Runtime\PhysicsCore\Public
-/I ..\Intermediate\Build\Win64\UnrealGame\Inc\Chaos
+/I ..\Intermediate\Build\Win64\UnrealGame\Inc\Chaos\UHT
 /I Runtime\Experimental
 /I Runtime\Experimental\Chaos\Public
 /I Runtime\Experimental\ChaosCore\Public
@@ -80,68 +81,77 @@ E:\Unreal\MPShooterGame\Plugins\MultiplayerSessions\Intermediate\Build\Win64\Unr
 /I Runtime\Experimental\Voronoi\Public
 /I Runtime\GeometryCore\Public
 /I Runtime\SignalProcessing\Public
-/I ..\Intermediate\Build\Win64\UnrealGame\Inc\AudioExtensions
+/I ..\Intermediate\Build\Win64\UnrealGame\Inc\AudioExtensions\UHT
 /I Runtime\AudioExtensions\Public
 /I Runtime\AudioMixerCore\Public
-/I ..\Intermediate\Build\Win64\UnrealGame\Inc\AudioLinkCore
+/I ..\Intermediate\Build\Win64\UnrealGame\Inc\AudioLinkCore\UHT
 /I Runtime\AudioLink
 /I Runtime\AudioLink\AudioLinkCore\Public
-/I ..\Intermediate\Build\Win64\UnrealGame\Inc\ClothingSystemRuntimeInterface
+/I Runtime\Networking\Public
+/I ..\Intermediate\Build\Win64\UnrealGame\Inc\ClothSysRuntimeIntrfc\UHT
 /I Runtime\ClothingSystemRuntimeInterface\Public
-/I ..\Intermediate\Build\Win64\UnrealGame\Inc\AudioMixer
+/I ..\Intermediate\Build\Win64\UnrealGame\Inc\IrisStub\UHT
+/I Runtime\Experimental\Iris
+/I Runtime\Experimental\Iris\Stub\Public
+/I ..\Intermediate\Build\Win64\UnrealGame\Inc\AudioMixer\UHT
 /I Runtime\AudioMixer\Classes
 /I Runtime\AudioMixer\Public
 /I Developer
 /I Developer\TargetPlatform\Public
 /I Developer\TextureFormat\Public
-/I ..\Intermediate\Build\Win64\UnrealGame\Inc\TypedElementFramework
+/I ..\Intermediate\Build\Win64\UnrealGame\Inc\MovieSceneCapture\UHT
+/I Runtime\MovieSceneCapture\Public
+/I ..\Intermediate\Build\Win64\UnrealGame\Inc\TypedElementFramework\UHT
 /I Runtime\TypedElementFramework\Public
-/I ..\Intermediate\Build\Win64\UnrealGame\Inc\TypedElementRuntime
+/I ..\Intermediate\Build\Win64\UnrealGame\Inc\TypedElementRuntime\UHT
 /I Runtime\TypedElementRuntime\Public
-/I E:\Unreal\MPShooterGame\Plugins\MultiplayerSessions\Intermediate\Build\Win64\UnrealGame\Inc\MultiplayerSessions
-/I E:\Unreal\MPShooterGame\Plugins\MultiplayerSessions\Source
-/I E:\Unreal\MPShooterGame\Plugins\MultiplayerSessions\Source\MultiplayerSessions\Public
-/I ..\Plugins\Online\OnlineSubsystem\Intermediate\Build\Win64\UnrealGame\Inc\OnlineSubsystem
+/I "E:\Unreal\MPShooterGame 5.1\Plugins\MultiplayerSessions\Intermediate\Build\Win64\UnrealGame\Inc\MultiplayerSessions\UHT"
+/I "E:\Unreal\MPShooterGame 5.1\Plugins\MultiplayerSessions\Source"
+/I "E:\Unreal\MPShooterGame 5.1\Plugins\MultiplayerSessions\Source\MultiplayerSessions\Public"
+/I ..\Plugins\Online\OnlineSubsystem\Intermediate\Build\Win64\UnrealGame\Inc\OnlineSubsystem\UHT
 /I ..\Plugins\Online\OnlineSubsystem
 /I ..\Plugins\Online\OnlineSubsystem\Source
 /I ..\Plugins\Online\OnlineSubsystem\Source\Public
 /I ..\Plugins\Online\OnlineBase
 /I ..\Plugins\Online\OnlineBase\Source\Public
-/I ..\Plugins\Online\OnlineSubsystemSteam\Intermediate\Build\Win64\UnrealGame\Inc\OnlineSubsystemSteam
+/I ..\Plugins\Online\OnlineSubsystemSteam\Intermediate\Build\Win64\UnrealGame\Inc\OnlineSubsystemSteam\UHT
 /I ..\Plugins\Online\OnlineSubsystemSteam
 /I ..\Plugins\Online\OnlineSubsystemSteam\Source\Classes
 /I ..\Plugins\Online\OnlineSubsystemSteam\Source\Public
-/I ..\Plugins\Online\OnlineSubsystemUtils\Intermediate\Build\Win64\UnrealGame\Inc\OnlineSubsystemUtils
+/I ..\Plugins\Online\OnlineSubsystemUtils\Intermediate\Build\Win64\UnrealGame\Inc\OnlineSubsystemUtils\UHT
 /I ..\Plugins\Online\OnlineSubsystemUtils\Source
 /I ..\Plugins\Online\OnlineSubsystemUtils\Source\OnlineSubsystemUtils\Classes
 /I ..\Plugins\Online\OnlineSubsystemUtils\Source\OnlineSubsystemUtils\Public
-/I ..\Intermediate\Build\Win64\UnrealGame\Inc\UMG
+/I ..\Intermediate\Build\Win64\UnrealGame\Inc\UMG\UHT
 /I Runtime\UMG\Public
 /I Runtime\Online
 /I Runtime\Online\HTTP\Public
-/I ..\Intermediate\Build\Win64\UnrealGame\Inc\MovieScene
+/I ..\Intermediate\Build\Win64\UnrealGame\Inc\MovieScene\UHT
 /I Runtime\MovieScene\Public
-/I ..\Intermediate\Build\Win64\UnrealGame\Inc\TimeManagement
+/I ..\Intermediate\Build\Win64\UnrealGame\Inc\TimeManagement\UHT
 /I Runtime\TimeManagement\Public
-/I ..\Intermediate\Build\Win64\UnrealGame\Inc\MovieSceneTracks
+/I ..\Intermediate\Build\Win64\UnrealGame\Inc\MovieSceneTracks\UHT
 /I Runtime\MovieSceneTracks\Public
-/I ..\Intermediate\Build\Win64\UnrealGame\Inc\PropertyPath
+/I ..\Intermediate\Build\Win64\UnrealGame\Inc\Constraints\UHT
+/I Runtime\Experimental\Animation
+/I Runtime\Experimental\Animation\Constraints\Public
+/I ..\Intermediate\Build\Win64\UnrealGame\Inc\PropertyPath\UHT
 /I Runtime\PropertyPath\Public
-/I ThirdParty\mimalloc\include
-/I ThirdParty\LibTiff\Source\Win64
-/I ThirdParty\LibTiff\Source
-/I "F:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.34.31933\INCLUDE"
-/I "C:\Program Files (x86)\Windows Kits\NETFXSDK\4.8\include\um"
-/I "C:\Program Files (x86)\Windows Kits\10\include\10.0.19041.0\ucrt"
-/I "C:\Program Files (x86)\Windows Kits\10\include\10.0.19041.0\shared"
-/I "C:\Program Files (x86)\Windows Kits\10\include\10.0.19041.0\um"
-/I "C:\Program Files (x86)\Windows Kits\10\include\10.0.19041.0\winrt"
-/FI"E:\Unreal\MPShooterGame\Intermediate\Build\Win64\MPShooterGame\Development\Engine\SharedPCH.Engine.ShadowErrors.h"
-/FI"E:\Unreal\MPShooterGame\Plugins\MultiplayerSessions\Intermediate\Build\Win64\UnrealGame\Development\MultiplayerSessions\Definitions.MultiplayerSessions.h"
-/Yu"E:\Unreal\MPShooterGame\Intermediate\Build\Win64\MPShooterGame\Development\Engine\SharedPCH.Engine.ShadowErrors.h"
-/Fp"E:\Unreal\MPShooterGame\Intermediate\Build\Win64\MPShooterGame\Development\Engine\SharedPCH.Engine.ShadowErrors.h.pch"
-/Fo"E:\Unreal\MPShooterGame\Plugins\MultiplayerSessions\Intermediate\Build\Win64\UnrealGame\Development\MultiplayerSessions\Module.MultiplayerSessions.cpp.obj"
-/sourceDependencies E:\Unreal\MPShooterGame\Plugins\MultiplayerSessions\Intermediate\Build\Win64\UnrealGame\Development\MultiplayerSessions\Module.MultiplayerSessions.cpp.json
+/external:W0
+/external:I ThirdParty\mimalloc\include
+/external:I ThirdParty\LibTiff\Source\Win64
+/external:I ThirdParty\LibTiff\Source
+/external:I "F:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.34.31933\INCLUDE"
+/external:I "C:\Program Files (x86)\Windows Kits\10\include\10.0.19041.0\ucrt"
+/external:I "C:\Program Files (x86)\Windows Kits\10\include\10.0.19041.0\shared"
+/external:I "C:\Program Files (x86)\Windows Kits\10\include\10.0.19041.0\um"
+/external:I "C:\Program Files (x86)\Windows Kits\10\include\10.0.19041.0\winrt"
+/FI"E:\Unreal\MPShooterGame 5.1\Intermediate\Build\Win64\MPShooterGame\Development\Engine\SharedPCH.Engine.ShadowErrors.InclOrderUnreal5_0.h"
+/FI"E:\Unreal\MPShooterGame 5.1\Plugins\MultiplayerSessions\Intermediate\Build\Win64\UnrealGame\Development\MultiplayerSessions\Definitions.MultiplayerSessions.h"
+/Yu"E:\Unreal\MPShooterGame 5.1\Intermediate\Build\Win64\MPShooterGame\Development\Engine\SharedPCH.Engine.ShadowErrors.InclOrderUnreal5_0.h"
+/Fp"E:\Unreal\MPShooterGame 5.1\Intermediate\Build\Win64\MPShooterGame\Development\Engine\SharedPCH.Engine.ShadowErrors.InclOrderUnreal5_0.h.pch"
+/Fo"E:\Unreal\MPShooterGame 5.1\Plugins\MultiplayerSessions\Intermediate\Build\Win64\UnrealGame\Development\MultiplayerSessions\Module.MultiplayerSessions.cpp.obj"
+/sourceDependencies "E:\Unreal\MPShooterGame 5.1\Plugins\MultiplayerSessions\Intermediate\Build\Win64\UnrealGame\Development\MultiplayerSessions\Module.MultiplayerSessions.cpp.dep.json"
 /Zc:inline
 /nologo
 /Oi
@@ -157,6 +167,7 @@ E:\Unreal\MPShooterGame\Plugins\MultiplayerSessions\Intermediate\Build\Win64\Unr
 /source-charset:utf-8
 /execution-charset:utf-8
 /Ob2
+/fastfail
 /Ox
 /Ot
 /GF

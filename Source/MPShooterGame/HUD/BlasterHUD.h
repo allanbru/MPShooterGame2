@@ -62,11 +62,16 @@ public:
 	class UAnnouncement* Announcement{ nullptr };
 	void AddAnnouncement();
 
+	void AddElimAnnouncement(FString Attacker, FString Victim);
+
 protected:
 
 	virtual void BeginPlay() override;
 	
 private:
+
+	UPROPERTY()
+	class APlayerController* OwningPlayer;
 	
 	FHUDPackage HUDPackage;
 
@@ -74,6 +79,18 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	float CrosshairSpreadMax = 16.f;
+
+	UPROPERTY(EditAnywhere, Category = "Announcements")
+	TSubclassOf<class UElimAnnouncement> ElimAnnouncementClass;
+
+	UPROPERTY(EditAnywhere)
+	float ElimAnnouncementTime{ 3.f };
+
+	UFUNCTION()
+	void ElimAnnouncementTimerFinished(UElimAnnouncement* MsgToRemove);
+
+	UPROPERTY()
+	TArray<UElimAnnouncement*> ElimMessages;
 
 public:
 	

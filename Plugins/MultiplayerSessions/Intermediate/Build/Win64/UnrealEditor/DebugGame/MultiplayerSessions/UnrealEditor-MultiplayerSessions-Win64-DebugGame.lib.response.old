@@ -1,0 +1,15 @@
+/NOLOGO
+/errorReport:prompt
+/MACHINE:x64
+/SUBSYSTEM:WINDOWS
+/DEF
+/NAME:"UnrealEditor-MultiplayerSessions-Win64-DebugGame.dll"
+/IGNORE:4221
+/NODEFAULTLIB
+"E:\Unreal\MPShooterGame 5.1\Intermediate\Build\Win64\MPShooterGameEditor\DebugGame\Engine\SharedPCH.Engine.NonOptimized.ShadowErrors.InclOrderUnreal5_0.h.obj"
+"E:\Unreal\MPShooterGame 5.1\Plugins\MultiplayerSessions\Intermediate\Build\Win64\UnrealEditor\DebugGame\MultiplayerSessions\Module.MultiplayerSessions.cpp.obj"
+"E:\Unreal\MPShooterGame 5.1\Plugins\MultiplayerSessions\Intermediate\Build\Win64\UnrealEditor\DebugGame\MultiplayerSessions\Menu.gen.cpp.obj"
+"E:\Unreal\MPShooterGame 5.1\Plugins\MultiplayerSessions\Intermediate\Build\Win64\UnrealEditor\DebugGame\MultiplayerSessions\MultiplayerSessions.init.gen.cpp.obj"
+"E:\Unreal\MPShooterGame 5.1\Plugins\MultiplayerSessions\Intermediate\Build\Win64\UnrealEditor\DebugGame\MultiplayerSessions\MultiplayerSessionsSubsystem.gen.cpp.obj"
+"E:\Unreal\MPShooterGame 5.1\Plugins\MultiplayerSessions\Intermediate\Build\Win64\UnrealEditor\DebugGame\MultiplayerSessions\Default.rc2.res"
+/OUT:"E:\Unreal\MPShooterGame 5.1\Plugins\MultiplayerSessions\Intermediate\Build\Win64\UnrealEditor\DebugGame\MultiplayerSessions\UnrealEditor-MultiplayerSessions-Win64-DebugGame.lib"

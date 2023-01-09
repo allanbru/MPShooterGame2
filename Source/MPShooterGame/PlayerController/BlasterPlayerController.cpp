@@ -14,6 +14,7 @@
 #include "MPShooterGame/HUD/Announcement.h"
 #include "MPShooterGame/HUD/BlasterHUD.h"
 #include "MPShooterGame/HUD/CharacterOverlay.h"
+#include "MPShooterGame/HUD/ReturnToMainMenu.h"
 #include "MPShooterGame/Weapon/Weapon.h"
 #include "Net/UnrealNetwork.h"
 
@@ -29,8 +30,11 @@ void ABlasterPlayerController::BeginPlay()
 void ABlasterPlayerController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
-	//ClassSelection
+	if (InputComponent == nullptr) return;
+	// ClassSelection
 	InputComponent->BindAction(TEXT("ChangeClass"), EInputEvent::IE_Pressed, this, &ABlasterPlayerController::SetHUDClassChange);
+	// PauseMenu
+	InputComponent->BindAction(TEXT("Quit"), EInputEvent::IE_Pressed, this, &ABlasterPlayerController::ShowReturnToMainMenu);
 }
 
 void ABlasterPlayerController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -197,6 +201,29 @@ void ABlasterPlayerController::ClientJoinMidgame_Implementation(FName StateOfMat
 	{
 		BlasterHUD->AddAnnouncement();
 	}
+}
+
+
+void ABlasterPlayerController::ShowReturnToMainMenu()
+{
+	if (ReturnToMainMenuWidget == nullptr) return;
+	if (ReturnToMainMenu == nullptr)
+	{
+		ReturnToMainMenu = CreateWidget<UReturnToMainMenu>(this, ReturnToMainMenuWidget);
+	}
+	if (ReturnToMainMenu)
+	{
+		bReturnToMainMenuOpen = !bReturnToMainMenuOpen;
+		if (bReturnToMainMenuOpen)
+		{
+			ReturnToMainMenu->MenuSetup();
+		}
+		else
+		{
+			ReturnToMainMenu->MenuTearDown();
+		}
+	}
+
 }
 
 void ABlasterPlayerController::SetHUDHealth(float Health, float MaxHealth)
@@ -566,4 +593,43 @@ void ABlasterPlayerController::SetStartingWeaponClass(TSubclassOf<AWeapon> Weapo
 void ABlasterPlayerController::ServerSetStartingWeaponClass_Implementation(TSubclassOf<AWeapon> WeaponClass)
 {
 	StartingWeaponClass = WeaponClass;
+}
+
+void ABlasterPlayerController::BroadcastElim(APlayerState* Attacker, APlayerState* Victim)
+{
+	ClientElimAnnouncement(Attacker, Victim);
+}
+
+void ABlasterPlayerController::ClientElimAnnouncement_Implementation(APlayerState* Attacker, APlayerState* Victim)
+{
+	APlayerState* Self = GetPlayerState<APlayerState>();
+	if (Attacker && Victim && Self)
+	{
+		BlasterHUD = (BlasterHUD == nullptr) ? Cast<ABlasterHUD>(GetHUD()) : BlasterHUD;
+		if (BlasterHUD)
+		{
+			if (Attacker == Self && Victim != Self)
+			{
+				BlasterHUD->AddElimAnnouncement("You", Victim->GetPlayerName());
+				return;
+			}
+			if (Victim == Self && Attacker != Self)
+			{
+				BlasterHUD->AddElimAnnouncement(Attacker->GetPlayerName(), "you");
+				return;
+			}
+			if (Attacker == Victim)
+			{
+				if (Attacker == Self)
+				{
+					BlasterHUD->AddElimAnnouncement("You", "yourself");
+					return;
+				}
+				BlasterHUD->AddElimAnnouncement(Attacker->GetPlayerName(), "themselves");
+				return;
+			}
+			BlasterHUD->AddElimAnnouncement(Attacker->GetPlayerName(), Victim->GetPlayerName());
+			return;
+		}
+	}
 }
