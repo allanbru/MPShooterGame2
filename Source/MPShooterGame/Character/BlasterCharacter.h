@@ -6,6 +6,7 @@
 #include "Components/TimelineComponent.h"
 #include "GameFramework/Character.h"
 #include "MPShooterGame/BlasterTypes/CombatState.h"
+#include "MPShooterGame/BlasterTypes/Team.h"
 #include "MPShooterGame/BlasterTypes/TurningInPlace.h"
 #include "MPShooterGame/Interfaces/InteractWithCrosshairsInterface.h"
 
@@ -80,6 +81,8 @@ public:
 
 	UFUNCTION(NetMulticast, Reliable)
 	void MulticastLostTheLead();
+
+	void SetTeamColor(ETeam Team);
 
 protected:
 	
@@ -309,8 +312,27 @@ private:
 	UMaterialInstanceDynamic* DynamicDissolveMaterialInstance{ nullptr };
 
 	//Mat Inst set on BP, used w/ the DynMatInst
-	UPROPERTY(EditAnywhere, Category = Elim)
+	UPROPERTY(VisibleAnywhere, Category = Elim)
 	UMaterialInstance* DissolveMaterialInstance{ nullptr };
+
+	/**
+	* Team Colors
+	*/
+
+	UPROPERTY(EditAnywhere, Category = Team)
+	UMaterialInstance* RedDissolveMatInst;
+
+	UPROPERTY(EditAnywhere, Category = Team)
+	UMaterialInstance* RedMaterial;
+	
+	UPROPERTY(EditAnywhere, Category = Team)
+	UMaterialInstance* BlueDissolveMatInst;
+
+	UPROPERTY(EditAnywhere, Category = Team)
+	UMaterialInstance* BlueMaterial;
+
+	UPROPERTY(EditAnywhere, Category = Team)
+		UMaterialInstance* OriginalMaterial;
 
 	/**
 	* Elim effects
@@ -349,6 +371,8 @@ private:
 	void SetVulnerable();
 	FTimerHandle InvulnerabilityTimer;
 
+	class ABlasterGameMode* BlasterGameMode;
+
 public:	
 	
 	void SetOverlappingWeapon(AWeapon* Weapon);
@@ -376,5 +400,6 @@ public:
 	FORCEINLINE UBuffComponent* GetBuff() const { return Buff; }
 	bool IsLocallyReloading();
 	FORCEINLINE ULagCompensationComponent* GetLagCompensation() { return LagCompensation; }
+	bool IsHoldingTheFlag() const;
 
 };

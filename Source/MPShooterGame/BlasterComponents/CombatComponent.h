@@ -252,6 +252,8 @@ private:
 
 	void UpdateHUDGrenades();
 
+	bool bHoldingTheFlag{ false };
+
 public:	
 
 	float TraceLength{ 80000.f };
