@@ -405,5 +405,6 @@ public:
 	bool BurdenFlagCarrier() const;
 	ETeam GetTeam();
 	void SetHoldingTheFlag(bool bHolding);
+	void InitializeCarriedAmmo();
 
 };

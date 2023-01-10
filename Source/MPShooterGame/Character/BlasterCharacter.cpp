@@ -637,6 +637,7 @@ void ABlasterCharacter::EquipStartingWeapon()
 			AWeapon* NewWeapon = World->SpawnActor<AWeapon>(StartingWeaponClass);
 			NewWeapon->SetWeaponState(EWeaponState::EWS_Initial);
 			Combat->EquipWeapon(NewWeapon);
+			Combat->Reload();
 			return;
 		}
 	}
@@ -1113,4 +1114,13 @@ void ABlasterCharacter::SetHoldingTheFlag(bool bHolding)
 {
 	if (Combat == nullptr) return;
 	Combat->bHoldingTheFlag = bHolding;
+}
+
+void ABlasterCharacter::InitializeCarriedAmmo()
+{
+	if (HasAuthority() && Combat)
+	{
+		Combat->InitializeCarriedAmmo();
+	}
+
 }

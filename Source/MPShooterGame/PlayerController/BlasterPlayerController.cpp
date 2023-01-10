@@ -92,6 +92,7 @@ void ABlasterPlayerController::PollInit()
 					{
 						BlasterCharacter->SetStartingWeaponClass(StartingWeaponClass);
 						BlasterCharacter->ServerEquipStartingWeapon();
+						BlasterCharacter->InitializeCarriedAmmo();
 					}
 				}
 			}
@@ -151,6 +152,7 @@ void ABlasterPlayerController::OnPossess(APawn* InPawn)
 		SetHUDShield(BlasterCharacter->GetShield(), BlasterCharacter->GetMaxShield());
 		BlasterCharacter->SetStartingWeaponClass(StartingWeaponClass);
 		BlasterCharacter->ServerEquipStartingWeapon();
+		BlasterCharacter->InitializeCarriedAmmo();
 		BlasterCharacter->UpdateHUDAmmo();
 	}
 }
