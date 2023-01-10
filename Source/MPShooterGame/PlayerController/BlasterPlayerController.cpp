@@ -83,8 +83,11 @@ void ABlasterPlayerController::PollInit()
 				if (bInitializeWeaponAmmo) SetHUDWeaponAmmo(HUDWeaponAmmo);
 				if (bInitializeCarriedAmmo) SetHUDCarriedAmmo(HUDCarriedAmmo);
 				ABlasterCharacter* BlasterCharacter = Cast<ABlasterCharacter>(GetPawn());
-				if (BlasterCharacter && bInitializeGrenades && BlasterCharacter->GetCombat()) {
-					SetHUDGrenades(BlasterCharacter->GetCombat()->GetGrenades());
+				if (BlasterCharacter)
+				{	
+					if(bInitializeGrenades&& BlasterCharacter->GetCombat()) {
+						SetHUDGrenades(BlasterCharacter->GetCombat()->GetGrenades());
+					}
 				}
 			}
 		}

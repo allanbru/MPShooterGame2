@@ -109,6 +109,7 @@ protected:
 	void FireButtonReleased();
 	void PlayHitReactMontage();
 	void GrenadeButtonPressed();
+	void SetSpawnPoint();
 
 	UFUNCTION()
 	void ReceiveDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, class AController* InstigatorController, AActor* DamageCauser);
@@ -401,5 +402,8 @@ public:
 	bool IsLocallyReloading();
 	FORCEINLINE ULagCompensationComponent* GetLagCompensation() { return LagCompensation; }
 	bool IsHoldingTheFlag() const;
+	bool BurdenFlagCarrier() const;
+	ETeam GetTeam();
+	void SetHoldingTheFlag(bool bHolding);
 
 };
