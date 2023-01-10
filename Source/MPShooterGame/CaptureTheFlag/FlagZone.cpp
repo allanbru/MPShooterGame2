@@ -23,27 +23,16 @@ void AFlagZone::BeginPlay()
 
 void AFlagZone::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Overlapping"));
-	if (OtherActor && OtherActor->GetName().Len() > 0)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Actor: %s"), *OtherActor->GetName());
-	}
+
 	AFlag* OverlappingFlag = Cast<AFlag>(OtherActor);
-	if (OverlappingFlag)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Overlapping with a flag"));
-	}
 
 	if (OverlappingFlag && OverlappingFlag->GetTeam() != Team)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Overlapping with right flag"));
 		ACaptureTheFlagGameMode* GameMode = Cast<ACaptureTheFlagGameMode>(GetWorld()->GetAuthGameMode());
 		if (GameMode)
 		{
 			GameMode->FlagCaptured(OverlappingFlag, this);
-			UE_LOG(LogTemp, Warning, TEXT("Gamemode OK"));
 		}
-		OverlappingFlag->ResetFlag();
 	}
 }
 

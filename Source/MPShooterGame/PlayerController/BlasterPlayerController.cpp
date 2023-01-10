@@ -88,6 +88,11 @@ void ABlasterPlayerController::PollInit()
 					if(bInitializeGrenades&& BlasterCharacter->GetCombat()) {
 						SetHUDGrenades(BlasterCharacter->GetCombat()->GetGrenades());
 					}
+					if (BlasterCharacter->GetEquippedWeapon() == nullptr)
+					{
+						BlasterCharacter->SetStartingWeaponClass(StartingWeaponClass);
+						BlasterCharacter->ServerEquipStartingWeapon();
+					}
 				}
 			}
 		}

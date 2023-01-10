@@ -15,36 +15,30 @@ void ACaptureTheFlagGameMode::PlayerEliminated(ABlasterCharacter* ElimmedCharact
 bool ACaptureTheFlagGameMode::FlagCaptured(AFlag* Flag, AFlagZone* Zone)
 {
 	bool bValidCapture = Flag->GetTeam() != Zone->Team;
-	UE_LOG(LogTemp, Warning, TEXT("Checking capture"));
 	if (!bValidCapture) return false;
-	UE_LOG(LogTemp, Warning, TEXT("Valid"));
 	TArray<AActor*> AllFlags;
 	UGameplayStatics::GetAllActorsOfClass(this, AFlag::StaticClass(), AllFlags);
 	ABlasterGameState* BGameState = Cast<ABlasterGameState>(GameState);
 	if (BGameState)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("GS Valid"));
 		// Check if other team's flags are in base
 		if (bCheckTeamFlagInBase && AllFlags.Num() > 0)
 		{
 			for (auto FlagInMap : AllFlags)
 			{
-				UE_LOG(LogTemp, Warning, TEXT("Checking Team Flag"));
 				AFlag* FlagToCheck = Cast<AFlag>(FlagInMap);
 				if (FlagToCheck && FlagToCheck->GetTeam() == Zone->Team &&!FlagToCheck->IsInBase()) return false;
 			}
-			UE_LOG(LogTemp, Warning, TEXT("Flag ok"));
 		}
 		if (Zone->Team == ETeam::ET_Blue)
 		{
 			BGameState->BlueTeamScores();
-			UE_LOG(LogTemp, Warning, TEXT("Done!"));
-
+			Flag->ResetFlag();
 		}
 		else if (Zone->Team == ETeam::ET_Red)
 		{
 			BGameState->RedTeamScores();
-			UE_LOG(LogTemp, Warning, TEXT("Wow!"));
+			Flag->ResetFlag();
 		}
 	}
 	return bValidCapture;
